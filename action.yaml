@@ -1,0 +1,35 @@
+name: ROS buildfarm
+description: Github Action to convert ROS packages to Debian packages
+author: Jochen Sprickerhof
+branding:
+  icon: 'package'
+  color: 'green'
+runs:
+  using: composite
+  steps:
+    - name: Check out the repo
+      uses: actions/checkout@v3
+    - name: Cache ccache
+      uses: pat-s/always-upload-cache@v3
+      with:
+        path: /home/runner/.cache/ccache
+        key: ccache-${{ env.ROS_DISTRO }}-${{ github.sha }}-${{ github.run_id }}
+        restore-keys: |
+          ccache-${{ env.ROS_DISTRO }}-${{ github.sha }}
+          ccache-${{ env.ROS_DISTRO }}
+    - name: Setup build environment
+      run: $GITHUB_ACTION_PATH/prepare.sh
+      shell: sh
+    - name: Create packages
+      run: $GITHUB_ACTION_PATH/build.sh
+      shell: sh
+    - name: Create apt repository
+      run: $GITHUB_ACTION_PATH/repository.sh
+      shell: sh
+    - name: Deploy
+      uses: s0/git-publish-subdir-action@develop
+      env:
+        REPO: self
+        BRANCH: ${{ env.DEB_DISTRO }}-${{ env.ROS_DISTRO }}
+        FOLDER: /home/runner/apt_repo
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
