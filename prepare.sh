@@ -11,7 +11,7 @@ sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
 echo "deb [signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo "$UBUNTU_CODENAME") main" \
   | sudo tee /etc/apt/sources.list.d/ros2.list
 sudo apt update
-sudo apt install -y sbuild mmdebstrap python3-colcon-common-extensions python3-bloom python3-rosdep python3-vcstool ccache
+sudo apt install -y sbuild mmdebstrap python3-colcon-common-extensions python3-bloom python3-rosdep python3-vcstool ccache distro-info
 
 echo "Setup build environment"
 
@@ -20,10 +20,11 @@ mmdebstrap --variant=buildd --include=apt,ccache \
   --customize-hook='chroot "$1" update-ccache-symlinks' \
   --components=main,universe "$DEB_DISTRO" "$HOME/.cache/sbuild/$DEB_DISTRO-amd64.tar"
 
+ccache --zero-stats --max-size=10.0G
+
 # allow ccache access from sbuild
 chmod a+rwX ~
 chmod -R a+rwX ~/.cache/ccache
-ccache --zero-stats --max-size=10.0G
 
 cat << "EOF" > ~/.sbuildrc
 $build_environment = { 'CCACHE_DIR' => '/build/ccache' };
