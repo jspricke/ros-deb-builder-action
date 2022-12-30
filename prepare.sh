@@ -37,4 +37,4 @@ EOF
 echo "Checkout workspace"
 
 mkdir src
-vcs import src < upstream.repos
+vcs import src < "${REPOS_FILE:-sources.repos}"

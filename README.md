@@ -12,6 +12,10 @@ Convert ROS packages to Debian packages.
 
 **Required** The Debian/Ubuntu distribution codename to compile for.
 
+## `REPOS_FILE`
+
+Repos file with list of repositories to package. Defaults to sources.repos.
+
 ## `GITHUB_TOKEN`
 
 Set to `${{ secrets.GITHUB_TOKEN }}` to deploy to a `DEB_DISTRO-ROS_DISTRO`
