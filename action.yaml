@@ -27,6 +27,7 @@ runs:
       run: $GITHUB_ACTION_PATH/repository.sh
       shell: sh
     - name: Deploy
+      if: ${{ env.GITHUB_TOKEN }}
       uses: s0/git-publish-subdir-action@develop
       env:
         REPO: self
