@@ -3,6 +3,8 @@
 
 set -ex
 
+test -n "$VERBOSE" && set -- --verbose
+
 if debian-distro-info --all | grep -q "$DEB_DISTRO"; then
   DISTRIBUTION=debian
 elif ubuntu-distro-info --all | grep -q "$DEB_DISTRO"; then
@@ -20,11 +22,11 @@ case $ROS_DISTRO in
     exit 1
     ;;
   melodic|noetic)
-    set -- --extra-repository="deb http://packages.ros.org/ros/ubuntu $DEB_DISTRO main" --extra-repository-key=/usr/share/keyrings/ros-archive-keyring.gpg
+    set -- --extra-repository="deb http://packages.ros.org/ros/ubuntu $DEB_DISTRO main" --extra-repository-key=/usr/share/keyrings/ros-archive-keyring.gpg "$@"
     ;;
   *)
     # assume ROS 2 so we don't have to list versions
-    set -- --extra-repository="deb http://packages.ros.org/ros2/ubuntu $DEB_DISTRO main" --extra-repository-key=/usr/share/keyrings/ros-archive-keyring.gpg
+    set -- --extra-repository="deb http://packages.ros.org/ros2/ubuntu $DEB_DISTRO main" --extra-repository-key=/usr/share/keyrings/ros-archive-keyring.gpg "$@"
     ;;
 esac
 
@@ -55,7 +57,7 @@ for PKG_PATH in $(colcon list -tp); do
   [ "$TOTAL" -ne 1 ] && echo "::group::Building $COUNT/$TOTAL: $PKG_PATH"
   (
   cd "$PKG_PATH"
-  bloom-generate rosdebian --os-name=$DISTRIBUTION --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
+  bloom-generate rosdebian --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
 
   # Set the version
   sed -i "1 s/([^)]*)/($(git describe --tag || echo 0)-$(date +%Y.%m.%d.%H.%M))/" debian/changelog
