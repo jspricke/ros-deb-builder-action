@@ -4,6 +4,28 @@ author: Jochen Sprickerhof
 branding:
   icon: 'package'
   color: 'green'
+inputs:
+  ROS_DISTRO:
+    description: The ROS distribution codename to compile for.
+    required: true
+  DEB_DISTRO:
+    description: The Debian/Ubuntu distribution codename to compile for.
+    required: true
+  REPOS_FILE:
+    description: Repos file with list of repositories to package.
+    required: false
+    default: sources.repos.
+  GITHUB_TOKEN:
+    description: Set to deploy to a DEB_DISTRO-ROS_DISTRO branch in the same repo.
+    required: false
+    default: false
+  SQUASH_HISTORY:
+    description: If set to true, all previous commits on the target branch will be discarded.
+    required: false
+    default: false
+  VERBOSE:
+    description: Set to true to enable verbose builds.
+    default: false
 runs:
   using: composite
   steps:
@@ -13,25 +35,40 @@ runs:
       uses: pat-s/always-upload-cache@v3
       with:
         path: /home/runner/.cache/ccache
-        key: ccache-${{ env.ROS_DISTRO }}-${{ github.sha }}-${{ github.run_id }}
+        key: ccache-${{ inputs.ROS_DISTRO }}-${{ github.sha }}-${{ github.run_id }}
         restore-keys: |
-          ccache-${{ env.ROS_DISTRO }}-${{ github.sha }}
-          ccache-${{ env.ROS_DISTRO }}
+          ccache-${{ inputs.ROS_DISTRO }}-${{ github.sha }}
+          ccache-${{ inputs.ROS_DISTRO }}
     - name: Setup build environment
       run: $GITHUB_ACTION_PATH/prepare.sh
       shell: sh
+      env:
+        ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
+        DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
+        REPOS_FILE: ${{ inputs.REPOS_FILE }}
+        VERBOSE: ${{ inputs.VERBOSE }}
     - name: Create packages
       run: $GITHUB_ACTION_PATH/build.sh
       shell: sh
+      env:
+        ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
+        DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
+        REPOS_FILE: ${{ inputs.REPOS_FILE }}
+        VERBOSE: ${{ inputs.VERBOSE }}
     - name: Create apt repository
       run: $GITHUB_ACTION_PATH/repository.sh
       shell: sh
+      env:
+        ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
+        DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
+        REPOS_FILE: ${{ inputs.REPOS_FILE }}
+        VERBOSE: ${{ inputs.VERBOSE }}
     - name: Deploy
-      if: ${{ env.GITHUB_TOKEN }}
+      if: ${{ inputs.GITHUB_TOKEN }}
       uses: s0/git-publish-subdir-action@develop
       env:
         REPO: self
-        BRANCH: ${{ env.DEB_DISTRO }}-${{ env.ROS_DISTRO }}
+        BRANCH: ${{ inputs.DEB_DISTRO }}-${{ inputs.ROS_DISTRO }}
         FOLDER: /home/runner/apt_repo
-        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
-        SQUASH_HISTORY: ${{ env.SQUASH_HISTORY }}
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        SQUASH_HISTORY: ${{ inputs.SQUASH_HISTORY }}

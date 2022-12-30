@@ -2,7 +2,7 @@
 
 Convert ROS packages to Debian packages.
 
-## Environment
+## Inputs
 
 ## `ROS_DISTRO`
 
@@ -14,7 +14,8 @@ Convert ROS packages to Debian packages.
 
 ## `REPOS_FILE`
 
-Repos file with list of repositories to package. Defaults to sources.repos.
+Repos file with list of repositories to package.
+Defaults to sources.repos.
 
 ## `GITHUB_TOKEN`
 
@@ -28,12 +29,12 @@ For example, if you are deploying a static site with lots of binary artifacts, t
 
 ## `VERBOSE`
 
-Set to any value to enable verbose builds.
+Set to true to enable verbose builds.
 
 ## Example usage
 
 uses: jspricke/ros-deb-builder-action@main
-env:
+with:
   ROS_DISTRO: rolling
   DEB_DISTRO: jammy
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
