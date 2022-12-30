@@ -21,6 +21,11 @@ Repos file with list of repositories to package. Defaults to sources.repos.
 Set to `${{ secrets.GITHUB_TOKEN }}` to deploy to a `DEB_DISTRO-ROS_DISTRO`
 branch in the same repo.
 
+## ``SQUASH_HISTORY``
+
+If set to true, all previous commits on the target branch will be discarded.
+For example, if you are deploying a static site with lots of binary artifacts, this can help the repository becoming overly bloated.
+
 ## `VERBOSE`
 
 Set to any value to enable verbose builds.

@@ -34,3 +34,4 @@ runs:
         BRANCH: ${{ env.DEB_DISTRO }}-${{ env.ROS_DISTRO }}
         FOLDER: /home/runner/apt_repo
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+        SQUASH_HISTORY: ${{ env.SQUASH_HISTORY }}
