@@ -33,8 +33,10 @@ Set to true to enable verbose builds.
 
 ## Example usage
 
+```
 uses: jspricke/ros-deb-builder-action@main
 with:
   ROS_DISTRO: rolling
   DEB_DISTRO: jammy
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
