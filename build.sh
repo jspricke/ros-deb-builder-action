@@ -22,42 +22,46 @@ case $ROS_DISTRO in
     exit 1
     ;;
   melodic|noetic)
-    set -- --extra-repository="deb http://packages.ros.org/ros/ubuntu $DEB_DISTRO main" --extra-repository-key=/usr/share/keyrings/ros-archive-keyring.gpg "$@"
+    BLOOM=ros
+    ROS_DEB="$ROS_DISTRO-"
+    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /home/runner/ros-archive-keyring.gpg
+    set -- --extra-repository="deb http://packages.ros.org/ros/ubuntu $DEB_DISTRO main" --extra-repository-key=/home/runner/ros-archive-keyring.gpg "$@"
     ;;
   *)
     # assume ROS 2 so we don't have to list versions
-    set -- --extra-repository="deb http://packages.ros.org/ros2/ubuntu $DEB_DISTRO main" --extra-repository-key=/usr/share/keyrings/ros-archive-keyring.gpg "$@"
+    BLOOM=ros
+    ROS_DEB="$ROS_DISTRO-"
+    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /home/runner/ros-archive-keyring.gpg
+    set -- --extra-repository="deb http://packages.ros.org/ros2/ubuntu $DEB_DISTRO main" --extra-repository-key=/home/runner/ros-archive-keyring.gpg "$@"
     ;;
 esac
 
+# make output directory
+mkdir /home/runner/apt_repo
 
 echo "Add unreleased packages to rosdep"
 
-echo "{distributions: {$ROS_DISTRO: {distribution: [https://raw.githubusercontent.com/ros/rosdistro/master/$ROS_DISTRO/distribution.yaml, local.yaml]}}, type: index, version: 4}" > index-v4.yaml
-printf "release_platforms: {$DISTRIBUTION: [%s]}\ntype: distribution\nversion: 2\nrepositories:\n" "$DEB_DISTRO" > local.yaml
-for PKG in $(colcon list -n); do
-  echo "  $PKG: {release: {tags: {release: None}, url: None}}" >> local.yaml
+for PKG in $(catkin_topological_order --only-names); do
+  printf "%s:\n  %s:\n  - %s\n" "$PKG" "$DISTRIBUTION" "ros-$ROS_DEB$(printf '%s' "$PKG" | tr '_' '-')" >> /home/runner/apt_repo/local.yaml
 done
+echo "yaml file:///home/runner/apt_repo/local.yaml $ROS_DISTRO" | sudo tee /etc/ros/rosdep/sources.list.d/1-local.list
 
-sudo rosdep init
-ROSDISTRO_INDEX_URL="file://$(pwd)/index-v4.yaml" rosdep update
+rosdep update
 
 echo "Run sbuild"
 
 # Don't build tests
 export DEB_BUILD_OPTIONS=nocheck
 
-# make output directory
-mkdir /home/runner/apt_repo
-
-TOTAL="$(colcon list | wc -l)"
+TOTAL="$(catkin_topological_order --only-names | wc -l)"
 COUNT=1
 
-for PKG_PATH in $(colcon list -tp); do
-  [ "$TOTAL" -ne 1 ] && echo "::group::Building $COUNT/$TOTAL: $PKG_PATH"
+# TODO: use colcon list -tp in future
+for PKG_PATH in $(catkin_topological_order --only-folders); do
+  echo "::group::Building $COUNT/$TOTAL: $PKG_PATH"
   (
   cd "$PKG_PATH"
-  bloom-generate rosdebian --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
+  bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
 
   # Set the version
   sed -i "1 s/([^)]*)/($(git describe --tag || echo 0)-$(date +%Y.%m.%d.%H.%M))/" debian/changelog
@@ -68,12 +72,10 @@ for PKG_PATH in $(colcon list -tp); do
   # dpkg-source-opts: no need for upstream.tar.gz
   sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
     --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" \
-    --build-dir=/home/runner/apt_repo --extra-package=/home/runner/apt_repo "$@" \
+    --build-dir=/home/runner/apt_repo --extra-package=/home/runner/apt_repo "$@"
   )
-  sudo chown -R runner:docker ~/.cache/ccache/
-  chmod -R a+rwX ~/.cache/ccache
-  ccache -sv
   COUNT=$((COUNT+1))
-  test "$TOTAL" -ne 1 && echo "::endgroup::"
-  true
+  echo "::endgroup::"
 done
+
+ccache -sv

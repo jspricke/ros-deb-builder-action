@@ -14,7 +14,7 @@ inputs:
   REPOS_FILE:
     description: Repos file with list of repositories to package.
     required: false
-    default: sources.repos.
+    default: sources.repos
   GITHUB_TOKEN:
     description: Set to deploy to a DEB_DISTRO-ROS_DISTRO branch in the same repo.
     required: false
@@ -43,17 +43,14 @@ runs:
       run: $GITHUB_ACTION_PATH/prepare.sh
       shell: sh
       env:
-        ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
         REPOS_FILE: ${{ inputs.REPOS_FILE }}
-        VERBOSE: ${{ inputs.VERBOSE }}
     - name: Create packages
       run: $GITHUB_ACTION_PATH/build.sh
       shell: sh
       env:
         ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
-        REPOS_FILE: ${{ inputs.REPOS_FILE }}
         VERBOSE: ${{ inputs.VERBOSE }}
     - name: Create apt repository
       run: $GITHUB_ACTION_PATH/repository.sh
@@ -61,8 +58,6 @@ runs:
       env:
         ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
-        REPOS_FILE: ${{ inputs.REPOS_FILE }}
-        VERBOSE: ${{ inputs.VERBOSE }}
     - name: Deploy
       if: ${{ inputs.GITHUB_TOKEN }}
       uses: s0/git-publish-subdir-action@develop

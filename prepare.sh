@@ -6,12 +6,8 @@ set -ex
 echo "Install dependencies"
 
 sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/sbuild
-sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
-  -o /usr/share/keyrings/ros-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo "$UBUNTU_CODENAME") main" \
-  | sudo tee /etc/apt/sources.list.d/ros2.list
 sudo apt update
-sudo apt install -y sbuild mmdebstrap python3-colcon-common-extensions python3-bloom python3-rosdep python3-vcstool ccache distro-info
+sudo apt install -y sbuild mmdebstrap distro-info debian-archive-keyring ccache vcstool python3-rosdep2 catkin python3-bloom
 
 echo "Setup build environment"
 
@@ -37,4 +33,4 @@ EOF
 echo "Checkout workspace"
 
 mkdir src
-vcs import src < "${REPOS_FILE:-sources.repos}"
+vcs import src < "$REPOS_FILE"
