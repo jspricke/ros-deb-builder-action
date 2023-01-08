@@ -59,8 +59,11 @@ COUNT=1
 # TODO: use colcon list -tp in future
 for PKG_PATH in $(catkin_topological_order --only-folders); do
   echo "::group::Building $COUNT/$TOTAL: $PKG_PATH"
+  test -f "$PKG_PATH/CATKIN_IGNORE" && echo "Skipped" && continue
+  test -f "$PKG_PATH/COLCON_IGNORE" && echo "Skipped" && continue
   (
   cd "$PKG_PATH"
+
   bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
 
   # Set the version
