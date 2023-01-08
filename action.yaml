@@ -15,6 +15,13 @@ inputs:
     description: Repos file with list of repositories to package.
     required: false
     default: sources.repos
+  SBUILD_CONF:
+    description: Additional sbuild.conf lines. For example EXTRA_REPOSITORIES,
+      or VERBOSE. See man sbuild.conf.
+    required: false
+  ROSDEP_SOURCE:
+    description: Additional rosdep sources.
+    required: false
   GITHUB_TOKEN:
     description: Set to deploy to a DEB_DISTRO-ROS_DISTRO branch in the same repo.
     required: false
@@ -22,9 +29,6 @@ inputs:
   SQUASH_HISTORY:
     description: If set to true, all previous commits on the target branch will be discarded.
     required: false
-    default: false
-  VERBOSE:
-    description: Set to true to enable verbose builds.
     default: false
 runs:
   using: composite
@@ -45,13 +49,14 @@ runs:
       env:
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
         REPOS_FILE: ${{ inputs.REPOS_FILE }}
+        SBUILD_CONF: ${{ inputs.SBUILD_CONF }}
     - name: Create packages
       run: $GITHUB_ACTION_PATH/build.sh
       shell: sh
       env:
         ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
-        VERBOSE: ${{ inputs.VERBOSE }}
+        ROSDEP_SOURCE: ${{ inputs.ROSDEP_SOURCE }}
     - name: Create apt repository
       run: $GITHUB_ACTION_PATH/repository.sh
       shell: sh

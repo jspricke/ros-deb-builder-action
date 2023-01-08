@@ -3,8 +3,6 @@
 
 set -ex
 
-test -n "$VERBOSE" && set -- --verbose
-
 if debian-distro-info --all | grep -q "$DEB_DISTRO"; then
   DISTRIBUTION=debian
 elif ubuntu-distro-info --all | grep -q "$DEB_DISTRO"; then
@@ -45,6 +43,7 @@ for PKG in $(catkin_topological_order --only-names); do
   printf "%s:\n  %s:\n  - %s\n" "$PKG" "$DISTRIBUTION" "ros-$ROS_DEB$(printf '%s' "$PKG" | tr '_' '-')" >> /home/runner/apt_repo/local.yaml
 done
 echo "yaml file:///home/runner/apt_repo/local.yaml $ROS_DISTRO" | sudo tee /etc/ros/rosdep/sources.list.d/1-local.list
+printf "%s" "$ROSDEP_SOURCE" | sudo tee /etc/ros/rosdep/sources.list.d/2-remote.list
 
 rosdep update
 
@@ -74,8 +73,8 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
 
   # dpkg-source-opts: no need for upstream.tar.gz
   sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
-    --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" \
-    --build-dir=/home/runner/apt_repo --extra-package=/home/runner/apt_repo "$@"
+    --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir=/home/runner/apt_repo \
+    --extra-package=/home/runner/apt_repo "$@"
   )
   COUNT=$((COUNT+1))
   echo "::endgroup::"

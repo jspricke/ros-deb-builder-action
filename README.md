@@ -17,19 +17,24 @@ Convert ROS packages to Debian packages.
 Repos file with list of repositories to package.
 Defaults to sources.repos.
 
+## `SBUILD_CONF`
+
+Additional sbuild.conf lines.
+For example EXTRA_REPOSITORIES, or VERBOSE.
+See man sbuild.conf.
+
+## `ROSDEP_SOURCE`
+
+Additional rosdep sources.
+
 ## `GITHUB_TOKEN`
 
-Set to `${{ secrets.GITHUB_TOKEN }}` to deploy to a `DEB_DISTRO-ROS_DISTRO`
-branch in the same repo.
+Set to `${{ secrets.GITHUB_TOKEN }}` to deploy to a `DEB_DISTRO-ROS_DISTRO` branch in the same repo.
 
 ## ``SQUASH_HISTORY``
 
 If set to true, all previous commits on the target branch will be discarded.
-For example, if you are deploying a static site with lots of binary artifacts, this can help the repository becoming overly bloated.
-
-## `VERBOSE`
-
-Set to true to enable verbose builds.
+For example, if you are deploying a static site with lots of binary artifacts, this can help prevent the repository from becoming overlay bloated
 
 ## Example usage
 

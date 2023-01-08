@@ -29,6 +29,9 @@ $build_path = "/build/package/";
 $dsc_dir = "package";
 $unshare_bind_mounts = [ { directory => '/home/runner/.cache/ccache', mountpoint => '/build/ccache' } ];
 EOF
+echo "$SBUILD_CONF" >> ~/.sbuildrc
+
+cat ~/.sbuildrc
 
 echo "Checkout workspace"
 
