@@ -7,7 +7,7 @@ echo "Install dependencies"
 
 sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/sbuild
 sudo apt update
-sudo apt install -y sbuild mmdebstrap distro-info debian-archive-keyring ccache vcstool python3-rosdep2 catkin python3-bloom
+sudo apt install -y mmdebstrap distro-info debian-archive-keyring ccache curl vcstool python3-rosdep2 sbuild catkin python3-bloom
 
 echo "Setup build environment"
 
@@ -36,4 +36,11 @@ cat ~/.sbuildrc
 echo "Checkout workspace"
 
 mkdir src
-vcs import src < "$REPOS_FILE"
+case $REPOS_FILE in
+  http*)
+    curl -sSL "$REPOS_FILE" | vcs import src
+    ;;
+  *)
+    vcs import src < "$REPOS_FILE"
+    ;;
+esac
