@@ -74,7 +74,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   # dpkg-source-opts: no need for upstream.tar.gz
   sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
     --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir=/home/runner/apt_repo \
-    --extra-package=/home/runner/apt_repo "$@"
+    --extra-package=/home/runner/apt_repo "$@" || echo "- [$(catkin_topological_order --only-names)]($(basename /home/runner/apt_repo/$(head -n1 debian/changelog | cut -d' ' -f1)*-*T*.build))" >> /home/runner/apt_repo/Failed.md
   )
   COUNT=$((COUNT+1))
   echo "::endgroup::"
