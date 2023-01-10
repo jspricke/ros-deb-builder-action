@@ -82,7 +82,7 @@ echo "Add unreleased packages to rosdep"
 set -ex
 
 for PKG in $(catkin_topological_order --only-names || colcon list --topological-order --names-only); do
-  printf "%s:\n  %s:\n  - %s\n" "$PKG" "$DISTRIBUTION" "ros-$ROS_DEB$(printf '%s' "$PKG" | tr '_' '-')" >> "$APT_REPO/local.yaml"
+  printf "%s:\n  %s:\n  - %s\n" "$PKG" "$DISTRIBUTION" "$ROS_DEB$(printf '%s' "$PKG" | tr '_' '-')" >> "$APT_REPO/local.yaml"
 done
 echo "yaml file://$APT_REPO/local.yaml $ROS_DISTRO" > "$APT_REPO/1-local.list"
 echo "$ROSDEP_SOURCE" > "$APT_REPO/2-remote.list"
@@ -93,6 +93,7 @@ echo "Run sbuild"
 
 # Don't build tests
 export DEB_BUILD_OPTIONS=nocheck
+BRANCH="${PACKAGES_BRANCH:-$DEB_DISTRO-$ROS_DISTRO}-${DEB_ARCH}"
 
 TOTAL="$( (catkin_topological_order --only-names || colcon list --topological-order --names-only) | wc -l)"
 COUNT=1
@@ -107,13 +108,16 @@ for PKG_PATH in $(catkin_topological_order --only-folders || colcon list --topol
   test -f "$PKG_PATH/CATKIN_IGNORE" && echo "$ROS_PACKAGE Skipped (CATKIN_IGNORE)" && exit
   test -f "$PKG_PATH/COLCON_IGNORE" && echo "$ROS_PACKAGE Skipped (COLCON_IGNORE)" && exit
   case " $SKIP_PACKAGES " in *" $ROS_PACKAGE "*) echo "$ROS_PACKAGE Skipped (in \$SKIP_PACKAGES)"; exit ;; esac
-  GENERATED_DEBIAN_PACKAGE="ros-${ROS_DEB}$( echo "$ROS_PACKAGE" | tr '_' '-')"
+  GENERATED_DEBIAN_PACKAGE="${ROS_DEB}$( echo "$ROS_PACKAGE" | tr '_' '-')"
   if [ -n "$CONTINUE_PACKAGE_GENERATION" ] && ls "$APT_REPO/${GENERATED_DEBIAN_PACKAGE}_"*.deb >/dev/null 2>&1; then
     echo " Skipping already generated package: ${GENERATED_DEBIAN_PACKAGE}"
     exit
   fi
 
-  ROS_HOME="$APT_REPO/ros" BLOOM_SKIP_ROSDEP_UPDATE=1 bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
+  if ! ROS_HOME="$APT_REPO/ros" BLOOM_SKIP_ROSDEP_UPDATE=1 bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"; then
+    echo "- bloom-generate of $ROS_PACKAGE" >> "$APT_REPO/Failed.md"
+    exit 0
+  fi
 
   # Set the version based on the checked out tag that contain at least on digit
   # strip any leading non digits as they are not part of the version number
@@ -125,7 +129,8 @@ for PKG_PATH in $(catkin_topological_order --only-folders || colcon list --topol
   # dpkg-source-opts: no need for upstream.tar.gz
   sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
     --no-source --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir="$APT_REPO" \
-    --extra-package="$APT_REPO" "$@"
+    --extra-package="$APT_REPO" "$@" \
+    || echo "- [$ROS_PACKAGE]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/raw/$BRANCH/$(basename "${APT_REPO}${ROS_PACKAGE}_"*-*T*.build))" >> "$APT_REPO/Failed.md"
 
   rm -f debian/rules debian/compat debian/changelog debian/control debian/copyright debian/source/format debian/source/options
   rmdir -p debian/source || true
