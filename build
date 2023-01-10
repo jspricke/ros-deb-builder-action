@@ -101,7 +101,10 @@ for PKG_PATH in $(catkin_topological_order --only-folders || colcon list --topol
     exit
   fi
 
-  ROS_HOME="$APT_REPO/ros" bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
+  if ! ROS_HOME="$APT_REPO/ros" bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"; then
+    echo "- ROS_HOME="$APT_REPO/ros" bloom-generate of $(basename "$PKG_PATH")" >> "$APT_REPO/Failed.md"
+    exit 0
+  fi
 
   # Set the version based on the checked out tag that contain at least on digit
   # strip any leading non digits as they are not part of the version number
@@ -113,7 +116,8 @@ for PKG_PATH in $(catkin_topological_order --only-folders || colcon list --topol
   # dpkg-source-opts: no need for upstream.tar.gz
   sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
     --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir="$APT_REPO" \
-    --extra-package="$APT_REPO" "$@"
+    --extra-package="$APT_REPO" "$@" \
+    || echo "- [$(catkin_topological_order --only-names)](https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$DEB_DISTRO-$ROS_DISTRO/$(basename "${APT_REPO}$(head -n1 debian/changelog | cut -d' ' -f1)_"*-*T*.build))" >> "$APT_REPO/Failed.md"
 
   rm -f debian/rules debian/compat debian/changelog debian/control debian/copyright debian/source/format debian/source/options
   rmdir -p debian/source || true
