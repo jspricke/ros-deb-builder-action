@@ -65,8 +65,9 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
 
   bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
 
-  # Set the version
-  sed -i "1 s/([^)]*)/($(git describe --tag || echo 0)-$(date +%Y.%m.%d.%H.%M))/" debian/changelog
+  # Set the version based on the checked out tag that contain at least on digit
+  # strip any leading non digits as they are not part of the version number
+  sed -i "1 s@([^)]*)@($( (git describe --tag  --match "*[0-9]*" 2>/dev/null || echo 0) | sed 's@^[^0-9]*@@')-$(date +%Y.%m.%d.%H.%M))@" debian/changelog
 
   # https://github.com/ros-infrastructure/bloom/pull/643
   echo 11 > debian/compat
