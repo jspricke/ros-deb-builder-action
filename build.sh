@@ -63,7 +63,10 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   (
   cd "$PKG_PATH"
 
-  bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
+  if ! bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"; then
+    echo "- bloom-generate of $(basename $PKG_PATH)" >> /home/runner/apt_repo/Failed.md
+    exit 0
+  fi
 
   # Set the version
   sed -i "1 s/([^)]*)/($(git describe --tag || echo 0)-$(date +%Y.%m.%d.%H.%M))/" debian/changelog
