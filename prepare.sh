@@ -28,6 +28,7 @@ $path = '/usr/lib/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin
 $build_path = "/build/package/";
 $dsc_dir = "package";
 $unshare_bind_mounts = [ { directory => '/home/runner/.cache/ccache', mountpoint => '/build/ccache' } ];
+$verbose = 1;
 EOF
 echo "$SBUILD_CONF" >> ~/.sbuildrc
 
