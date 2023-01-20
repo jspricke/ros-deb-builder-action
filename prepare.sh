@@ -22,13 +22,16 @@ ccache --zero-stats --max-size=10.0G
 chmod a+rwX ~
 chmod -R a+rwX ~/.cache/ccache
 
-cat << "EOF" > ~/.sbuildrc
-$build_environment = { 'CCACHE_DIR' => '/build/ccache' };
-$path = '/usr/lib/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games';
-$build_path = "/build/package/";
-$dsc_dir = "package";
-$unshare_bind_mounts = [ { directory => '/home/runner/.cache/ccache', mountpoint => '/build/ccache' } ];
-$verbose = 1;
+cat << EOF > ~/.sbuildrc
+\$build_environment = {
+  'CCACHE_DIR' => '/build/ccache',
+  'ROS_DISTRO' => '$ROS_DISTRO'
+};
+\$path = '/usr/lib/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games';
+\$build_path = "/build/package/";
+\$dsc_dir = "package";
+\$unshare_bind_mounts = [ { directory => '/home/runner/.cache/ccache', mountpoint => '/build/ccache' } ];
+\$verbose = 1;
 EOF
 echo "$SBUILD_CONF" >> ~/.sbuildrc
 
