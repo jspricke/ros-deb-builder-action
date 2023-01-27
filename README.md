@@ -34,7 +34,7 @@ Set to `${{ secrets.GITHUB_TOKEN }}` to deploy to a `DEB_DISTRO-ROS_DISTRO` bran
 ## ``SQUASH_HISTORY``
 
 If set to true, all previous commits on the target branch will be discarded.
-For example, if you are deploying a static site with lots of binary artifacts, this can help prevent the repository from becoming overlay bloated
+For example, if you are deploying a static site with lots of binary artifacts, this can help prevent the repository from becoming overly bloated
 
 ## Example usage
 
