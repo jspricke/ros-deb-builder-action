@@ -39,9 +39,9 @@ echo "Checkout workspace"
 mkdir src
 case $REPOS_FILE in
   http*)
-    curl -sSL "$REPOS_FILE" | vcs import src
+    curl -sSL "$REPOS_FILE" | vcs import --recursive src
     ;;
   *)
-    vcs import src < "$REPOS_FILE"
+    vcs import --recursive src < "$REPOS_FILE"
     ;;
 esac
