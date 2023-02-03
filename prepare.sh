@@ -37,4 +37,4 @@ cat ~/.sbuildrc
 echo "Checkout workspace"
 
 mkdir src
-vcs import --input  "$REPOS_FILE" src
+vcs import --recursive --input  "$REPOS_FILE" src
