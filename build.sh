@@ -3,6 +3,24 @@
 
 set -ex
 
+while getopts ch OPTCHAR; do
+  case "$OPTCHAR" in
+    c)
+      CONTINUE_PACKAGE_GENERATION=1
+      ;;
+    h)
+      echo "usage: $0 [-c]"
+      echo "  -c To continue at the last package and skip those already built."
+      exit
+      ;;
+    *)
+      echo "Error parsing arguments"
+      exit 1
+      ;;
+  esac
+done
+shift "$((OPTIND - 1))"
+
 if debian-distro-info --all | grep -q "$DEB_DISTRO"; then
   DISTRIBUTION=debian
 elif ubuntu-distro-info --all | grep -q "$DEB_DISTRO"; then
@@ -35,7 +53,7 @@ case $ROS_DISTRO in
 esac
 
 # make output directory
-mkdir /home/runner/apt_repo
+mkdir -p /home/runner/apt_repo
 
 echo "Add unreleased packages to rosdep"
 
@@ -62,6 +80,11 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   test -f "$PKG_PATH/COLCON_IGNORE" && echo "Skipped" && continue
   (
   cd "$PKG_PATH"
+  GENERATED_DEBIAN_PACKAGE="ros-${ROS_DEB}$(catkin_topological_order --only-names | tr '_' '-')"
+  if [ -n "$CONTINUE_PACKAGE_GENERATION" ] && ls "/home/runner/apt_repo/${GENERATED_DEBIAN_PACKAGE}_"*.deb >/dev/null 2>&1; then
+    echo " Skipping already generated package: ${GENERATED_DEBIAN_PACKAGE}"
+    exit
+  fi
 
   bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
 
