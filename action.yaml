@@ -57,18 +57,11 @@ runs:
         ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
         ROSDEP_SOURCE: ${{ inputs.ROSDEP_SOURCE }}
-    - name: Create apt repository
+    - name: Create apt repository and deploy it
       run: $GITHUB_ACTION_PATH/repository.sh
       shell: sh
       env:
         ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
-    - name: Deploy
-      if: ${{ inputs.GITHUB_TOKEN }}
-      uses: s0/git-publish-subdir-action@develop
-      env:
-        REPO: self
-        BRANCH: ${{ inputs.DEB_DISTRO }}-${{ inputs.ROS_DISTRO }}
-        FOLDER: /home/runner/apt_repo
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         SQUASH_HISTORY: ${{ inputs.SQUASH_HISTORY }}

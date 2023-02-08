@@ -21,13 +21,20 @@ while getopts ch OPTCHAR; do
 done
 shift "$((OPTIND - 1))"
 
-if debian-distro-info --all | grep -q "$DEB_DISTRO"; then
-  DISTRIBUTION=debian
-elif ubuntu-distro-info --all | grep -q "$DEB_DISTRO"; then
-  DISTRIBUTION=ubuntu
-else
-  echo "Unknown DEB_DISTRO: $DEB_DISTRO"
-  exit 1
+# make output directory
+test -z "$CONTINUE_PACKAGE_GENERATION" && rm -rf apt_repo
+mkdir -p apt_repo
+APT_REPO="$(pwd)/apt_repo"
+
+if [ -z "$DISTRIBUTION" ]; then
+  if debian-distro-info --all | grep -q "$DEB_DISTRO"; then
+    DISTRIBUTION=debian
+  elif ubuntu-distro-info --all | grep -q "$DEB_DISTRO"; then
+    DISTRIBUTION=ubuntu
+  else
+    echo "Unknown DEB_DISTRO: $DEB_DISTRO"
+    exit 1
+  fi
 fi
 
 case $ROS_DISTRO in
@@ -40,30 +47,27 @@ case $ROS_DISTRO in
   melodic|noetic)
     BLOOM=ros
     ROS_DEB="$ROS_DISTRO-"
-    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /home/runner/ros-archive-keyring.gpg
-    set -- --extra-repository="deb http://packages.ros.org/ros/ubuntu $DEB_DISTRO main" --extra-repository-key=/home/runner/ros-archive-keyring.gpg "$@"
+    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o "$APT_REPO/ros-archive-keyring.gpg"
+    set -- --extra-repository="deb http://packages.ros.org/ros/ubuntu $DEB_DISTRO main" --extra-repository-key="$APT_REPO/ros-archive-keyring.gpg" "$@"
     ;;
   *)
     # assume ROS 2 so we don't have to list versions
     BLOOM=ros
     ROS_DEB="$ROS_DISTRO-"
-    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /home/runner/ros-archive-keyring.gpg
-    set -- --extra-repository="deb http://packages.ros.org/ros2/ubuntu $DEB_DISTRO main" --extra-repository-key=/home/runner/ros-archive-keyring.gpg "$@"
+    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o "$APT_REPO/ros-archive-keyring.gpg"
+    set -- --extra-repository="deb http://packages.ros.org/ros2/ubuntu $DEB_DISTRO main" --extra-repository-key="$APT_REPO/ros-archive-keyring.gpg" "$@"
     ;;
 esac
-
-# make output directory
-mkdir -p /home/runner/apt_repo
 
 echo "Add unreleased packages to rosdep"
 
 for PKG in $(catkin_topological_order --only-names); do
-  printf "%s:\n  %s:\n  - %s\n" "$PKG" "$DISTRIBUTION" "ros-$ROS_DEB$(printf '%s' "$PKG" | tr '_' '-')" >> /home/runner/apt_repo/local.yaml
+  printf "%s:\n  %s:\n  - %s\n" "$PKG" "$DISTRIBUTION" "ros-$ROS_DEB$(printf '%s' "$PKG" | tr '_' '-')" >> "$APT_REPO/local.yaml"
 done
-echo "yaml file:///home/runner/apt_repo/local.yaml $ROS_DISTRO" | sudo tee /etc/ros/rosdep/sources.list.d/1-local.list
-printf "%s" "$ROSDEP_SOURCE" | sudo tee /etc/ros/rosdep/sources.list.d/2-remote.list
+echo "yaml file://$APT_REPO/local.yaml $ROS_DISTRO" > "$APT_REPO/1-local.list"
+echo "$ROSDEP_SOURCE" > "$APT_REPO/2-remote.list"
 
-rosdep update
+ROSDEP_SOURCE_PATH="$APT_REPO:/etc/ros/rosdep/sources.list.d/" rosdep update
 
 echo "Run sbuild"
 
@@ -81,7 +85,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   (
   cd "$PKG_PATH"
   GENERATED_DEBIAN_PACKAGE="ros-${ROS_DEB}$(catkin_topological_order --only-names | tr '_' '-')"
-  if [ -n "$CONTINUE_PACKAGE_GENERATION" ] && ls "/home/runner/apt_repo/${GENERATED_DEBIAN_PACKAGE}_"*.deb >/dev/null 2>&1; then
+  if [ -n "$CONTINUE_PACKAGE_GENERATION" ] && ls "$APT_REPO/${GENERATED_DEBIAN_PACKAGE}_"*.deb >/dev/null 2>&1; then
     echo " Skipping already generated package: ${GENERATED_DEBIAN_PACKAGE}"
     exit
   fi
@@ -97,11 +101,18 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
 
   # dpkg-source-opts: no need for upstream.tar.gz
   sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
-    --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir=/home/runner/apt_repo \
-    --extra-package=/home/runner/apt_repo "$@"
+    --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir="$APT_REPO" \
+    --extra-package="$APT_REPO" "$@"
+
+  rm -f debian/rules debian/compat debian/changelog debian/control debian/copyright debian/source/format debian/source/options
+  rmdir -p debian/source || true
+
   )
   COUNT=$((COUNT+1))
   echo "::endgroup::"
 done
+
+# revert rosdep cache
+rosdep update
 
 ccache -sv
