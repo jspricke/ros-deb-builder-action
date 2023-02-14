@@ -45,7 +45,7 @@ mmdebstrap --variant=buildd --include=apt,ccache,auto-apt-proxy \
 ccache --zero-stats --max-size=10.0G
 
 # allow ccache access from sbuild
-chmod a+X "$HOME"
+chmod a+X "$HOME" "$HOME/.cache"
 chmod -R a+rwX "$HOME/.cache/ccache"
 
 cat << "EOF" > "$HOME/.sbuildrc"
