@@ -1,6 +1,28 @@
 #!/bin/sh
 # SPDX-License-Identifier: BSD-3-Clause
 
+while getopts d:hr: OPTCHAR; do
+  case "$OPTCHAR" in
+    d)
+      DEB_DISTRO="$OPTARG"
+      ;;
+    h)
+      echo "usage: $0 [-c]"
+      echo "  -d The Debian/Ubuntu distribution codename to compile for."
+      echo "  -r The ROS distribution codename to compile for."
+      exit
+      ;;
+    r)
+      ROS_DISTRO="$OPTARG"
+      ;;
+    *)
+      echo "Error parsing arguments"
+      exit 1
+      ;;
+  esac
+done
+shift "$((OPTIND - 1))"
+
 set -ex
 
 vcs export src --exact-with-tags > apt_repo/sources.repos
