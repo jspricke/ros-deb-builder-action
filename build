@@ -69,7 +69,7 @@ echo "Add unreleased packages to rosdep"
 
 set -ex
 
-for PKG in $(catkin_topological_order --only-names); do
+for PKG in $(catkin_topological_order --only-names || colcon list --topological-order --names-only); do
   printf "%s:\n  %s:\n  - %s\n" "$PKG" "$DISTRIBUTION" "ros-$ROS_DEB$(printf '%s' "$PKG" | tr '_' '-')" >> "$APT_REPO/local.yaml"
 done
 echo "yaml file://$APT_REPO/local.yaml $ROS_DISTRO" > "$APT_REPO/1-local.list"
@@ -82,17 +82,16 @@ echo "Run sbuild"
 # Don't build tests
 export DEB_BUILD_OPTIONS=nocheck
 
-TOTAL="$(catkin_topological_order --only-names | wc -l)"
+TOTAL="$( (catkin_topological_order --only-names || colcon list --topological-order --names-only) | wc -l)"
 COUNT=1
 
-# TODO: use colcon list -tp in future
-for PKG_PATH in $(catkin_topological_order --only-folders); do
+for PKG_PATH in $(catkin_topological_order --only-folders || colcon list --topological-order --paths-only); do
   echo "::group::Building $COUNT/$TOTAL: $PKG_PATH"
   test -f "$PKG_PATH/CATKIN_IGNORE" && echo "Skipped" && continue
   test -f "$PKG_PATH/COLCON_IGNORE" && echo "Skipped" && continue
   (
   cd "$PKG_PATH"
-  GENERATED_DEBIAN_PACKAGE="ros-${ROS_DEB}$(catkin_topological_order --only-names | tr '_' '-')"
+  GENERATED_DEBIAN_PACKAGE="ros-${ROS_DEB}$( (catkin_topological_order --only-names || colcon list --topological-order --names-only) | tr '_' '-')"
   if [ -n "$CONTINUE_PACKAGE_GENERATION" ] && ls "$APT_REPO/${GENERATED_DEBIAN_PACKAGE}_"*.deb >/dev/null 2>&1; then
     echo " Skipping already generated package: ${GENERATED_DEBIAN_PACKAGE}"
     exit
