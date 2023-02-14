@@ -1,9 +1,27 @@
 #!/bin/sh
 # SPDX-License-Identifier: BSD-3-Clause
 
-set -ex
+while getopts d:h OPTCHAR; do
+  case "$OPTCHAR" in
+    d)
+      DEB_DISTRO="$OPTARG"
+      ;;
+    h)
+      echo "usage: $0 [-d]"
+      echo "  -d To specify the distribution of the chroot."
+      exit
+      ;;
+    *)
+      echo "Error parsing arguments"
+      exit 1
+      ;;
+  esac
+done
+shift "$((OPTIND - 1))"
 
 echo "Install dependencies"
+
+set -ex
 
 # TODO: drop once new distros are available
 test "$(lsb_release -cs)" = "jammy" && sudo add-apt-repository -y ppa:v-launchpad-jochen-sprickerhof-de/sbuild

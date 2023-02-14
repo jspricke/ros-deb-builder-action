@@ -1,17 +1,23 @@
 #!/bin/sh
 # SPDX-License-Identifier: BSD-3-Clause
 
-set -ex
-
-while getopts ch OPTCHAR; do
+while getopts cd:hr: OPTCHAR; do
   case "$OPTCHAR" in
     c)
       CONTINUE_PACKAGE_GENERATION=1
       ;;
+    d)
+      DEB_DISTRO="$OPTARG"
+      ;;
     h)
       echo "usage: $0 [-c]"
       echo "  -c To continue at the last package and skip those already built."
+      echo "  -d The Debian/Ubuntu distribution codename to compile for."
+      echo "  -r The ROS distribution codename to compile for."
       exit
+      ;;
+    r)
+      ROS_DISTRO="$OPTARG"
       ;;
     *)
       echo "Error parsing arguments"
@@ -60,6 +66,8 @@ case $ROS_DISTRO in
 esac
 
 echo "Add unreleased packages to rosdep"
+
+set -ex
 
 for PKG in $(catkin_topological_order --only-names); do
   printf "%s:\n  %s:\n  - %s\n" "$PKG" "$DISTRIBUTION" "ros-$ROS_DEB$(printf '%s' "$PKG" | tr '_' '-')" >> "$APT_REPO/local.yaml"
