@@ -44,21 +44,21 @@ runs:
           ccache-${{ inputs.ROS_DISTRO }}-${{ github.sha }}
           ccache-${{ inputs.ROS_DISTRO }}
     - name: Setup build environment
-      run: $GITHUB_ACTION_PATH/prepare.sh
+      run: $GITHUB_ACTION_PATH/prepare
       shell: sh
       env:
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
         REPOS_FILE: ${{ inputs.REPOS_FILE }}
         SBUILD_CONF: ${{ inputs.SBUILD_CONF }}
     - name: Create packages
-      run: $GITHUB_ACTION_PATH/build.sh
+      run: $GITHUB_ACTION_PATH/build
       shell: sh
       env:
         ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
         ROSDEP_SOURCE: ${{ inputs.ROSDEP_SOURCE }}
     - name: Create apt repository and deploy it
-      run: $GITHUB_ACTION_PATH/repository.sh
+      run: $GITHUB_ACTION_PATH/repository
       shell: sh
       env:
         ROS_DISTRO: ${{ inputs.ROS_DISTRO }}

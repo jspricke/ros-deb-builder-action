@@ -49,10 +49,10 @@ with:
 ## Run manually
 
 You can run this action locally on Ubuntu 22.04 or Debian bookworm and newer system.
-Run `prepare.sh` once to set up the system and/or adapt to your needs.
+Run `./prepare` once to set up the system and/or adapt to your needs.
 It will create a `~/.cache/sbuild` with sufficient rights for the sbuild process, a `~/.sbuildrc` and a `./src` with the checked out repos.
-Run `build.sh` in a ROS workspace (or the current directory with `./src`) to generate the packages into the `apt_repo` folder.
-You can run `build.sh -c` to skip already built packages.
+Run `./build` in a ROS workspace (or the current directory with `./src`) to generate the packages into the `apt_repo` folder.
+You can run `./build -c` to skip already built packages.
 The `rosdep` cache is updated twice within the script to include the packages in the local repo, but reverted to the original cache afterwards.
-Run `repository.sh` to create an apt repository.
+Run `./repository` to create an apt repository.
 You can directly use it on your local machine by adapting the path from the generated `README.md`.
