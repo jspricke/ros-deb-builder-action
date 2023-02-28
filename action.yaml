@@ -22,6 +22,10 @@ inputs:
   ROSDEP_SOURCE:
     description: Additional rosdep sources.
     required: false
+  SKIP_ROS_REPOSITORY:
+    description: Don't add packages.ros.org as an apt repository. This allows to build against snapshots.ros.org, for example.
+    required: false
+    default: false
   GITHUB_TOKEN:
     description: Set to deploy to a DEB_DISTRO-ROS_DISTRO branch in the same repo.
     required: false
