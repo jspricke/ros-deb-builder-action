@@ -27,6 +27,7 @@ set -ex
 test "$(lsb_release -cs)" = "jammy" && sudo add-apt-repository -y ppa:v-launchpad-jochen-sprickerhof-de/sbuild
 sudo apt update
 export DEBIAN_FRONTEND=noninteractive
+echo "debconf debconf/priority select critical" | debconf-set-selections
 # Try different package combinations:
 # first is for a clean jammy with the PPA
 # second is for Debian bookworm and newer
