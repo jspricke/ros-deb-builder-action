@@ -26,15 +26,14 @@ set -ex
 # TODO: drop once new distros are available
 test "$(lsb_release -cs)" = "jammy" && sudo add-apt-repository -y ppa:v-launchpad-jochen-sprickerhof-de/sbuild
 sudo apt update
-export DEBIAN_FRONTEND=noninteractive
 # Try different package combinations:
 # first is for a clean jammy with the PPA
 # second is for Debian bookworm and newer
 # third is for OSRF package names
 # TODO: get OSRF to add proper package relations
-sudo -E apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache vcstool python3-rosdep2 catkin python3-bloom curl apt-cacher-ng || \
-sudo -E apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache vcstool python3-rosdep2 colcon python3-colcon-package-information python3-colcon-ros python3-bloom curl apt-cacher-ng || \
-sudo -E apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache python3-vcstool python3-rosdep python3-colcon-cmake python3-colcon-installed-package-information python3-colcon-library-path python3-colcon-package-information python3-colcon-pkg-config python3-colcon-recursive-crawl python3-colcon-test-result python3-bloom curl apt-cacher-ng
+sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache vcstool python3-rosdep2 catkin python3-bloom curl apt-cacher-ng || \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache vcstool python3-rosdep2 colcon python3-colcon-package-information python3-colcon-ros python3-bloom curl apt-cacher-ng || \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache python3-vcstool python3-rosdep python3-colcon-cmake python3-colcon-installed-package-information python3-colcon-library-path python3-colcon-package-information python3-colcon-pkg-config python3-colcon-recursive-crawl python3-colcon-test-result python3-bloom curl apt-cacher-ng
 
 echo "Setup build environment"
 
