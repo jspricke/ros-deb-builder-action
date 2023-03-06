@@ -25,7 +25,7 @@ shift "$((OPTIND - 1))"
 
 set -ex
 
-vcs export src --exact-with-tags > apt_repo/sources.repos
+test -d src && vcs export src --exact-with-tags > apt_repo/sources.repos
 
 cd apt_repo
 apt-ftparchive packages . > Packages

@@ -60,5 +60,7 @@ echo "$SBUILD_CONF" >> "$HOME/.sbuildrc"
 
 echo "Checkout workspace"
 
+test ! -f "$REPOS_FILE" && exit
+
 mkdir src
 vcs import --recursive --input  "$REPOS_FILE" src
