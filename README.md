@@ -39,11 +39,21 @@ For example, if you are deploying a static site with lots of binary artifacts, t
 ## Example usage
 
 ```
-uses: jspricke/ros-deb-builder-action@main
-with:
-  ROS_DISTRO: rolling
-  DEB_DISTRO: jammy
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+name: builder
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build_testing:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: jspricke/ros-deb-builder-action@main
+        with:
+          ROS_DISTRO: rolling
+          DEB_DISTRO: jammy
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Run manually
