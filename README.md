@@ -59,3 +59,20 @@ The `rosdep` cache is updated twice within the script to include the packages in
 
 Run `./repository -r <ros_distro> -d <deb_distro>` to create an apt repository.
 You can directly use it on your local machine by adapting the path from the generated `README.md`.
+
+## FAQ
+
+### The action fails with:
+```
+remote: Permission to <REPO_NAME> denied to github-actions[bot].
+fatal: unable to access '<REPO_URL>': The requested URL returned error: 403
+```
+
+Make sure the `GITHUB_TOKEN` has permission to write to the git repository.
+In the Github webinterface of the project got to Settings, Actions, General.
+At the bottom there is "Workflow permissions", make sure "Read and write permissions" is selected.
+
+### The apt repository is missing some packages
+
+Github has a hard limit of 100MB per file, so the Action deletes bigger files before pushing.
+You could omit the `GITHUB_TOKEN` and add your own deploy method as a job.
