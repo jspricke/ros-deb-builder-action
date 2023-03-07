@@ -58,9 +58,9 @@ $verbose = 1;
 EOF
 echo "$SBUILD_CONF" >> "$HOME/.sbuildrc"
 
-echo "Checkout workspace"
+test "$REPOS_FILE" = "sources.repos" -a ! -f "$REPOS_FILE" && exit
 
-test -z "$REPOS_FILE" && exit
+echo "Checkout workspace"
 
 mkdir src
 vcs import --recursive --input  "$REPOS_FILE" src
