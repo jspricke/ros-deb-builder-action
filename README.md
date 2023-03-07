@@ -96,6 +96,6 @@ You could omit the `GITHUB_TOKEN` and add your own deploy method as a final step
 
 Create a Github personal access token with repo scope and do:
 ```
-echo -e "machine raw.githubusercontent.com\nlogin <TOKEN>" | sudo tee /etc/apt/auth.conf
+echo -e "machine raw.githubusercontent.com\nlogin <TOKEN>" | sudo tee /etc/apt/auth.conf.d/github.conf
 
 ```
