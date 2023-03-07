@@ -27,6 +27,11 @@ See man sbuild.conf.
 
 Additional rosdep sources.
 
+## `SKIP_ROS_REPOSITORY`
+
+Don't add packages.ros.org as an apt repository.
+This allows to build against snapshots.ros.org, for example.
+
 ## `GITHUB_TOKEN`
 
 Set to `${{ secrets.GITHUB_TOKEN }}` to deploy to a `DEB_DISTRO-ROS_DISTRO` branch in the same repo.
@@ -85,4 +90,4 @@ At the bottom there is "Workflow permissions", make sure "Read and write permiss
 ### The apt repository is missing some packages
 
 Github has a hard limit of 100MB per file, so the Action deletes bigger files before pushing.
-You could omit the `GITHUB_TOKEN` and add your own deploy method as a job.
+You could omit the `GITHUB_TOKEN` and add your own deploy method as a final step.
