@@ -91,3 +91,11 @@ At the bottom there is "Workflow permissions", make sure "Read and write permiss
 
 Github has a hard limit of 100MB per file, so the Action deletes bigger files before pushing.
 You could omit the `GITHUB_TOKEN` and add your own deploy method as a final step.
+
+### How to use a private repo as an apt source
+
+Create a Github personal access token with repo scope and do:
+```
+echo -e "machine raw.githubusercontent.com\nlogin <TOKEN>" | sudo tee /etc/apt/auth.conf
+
+```
