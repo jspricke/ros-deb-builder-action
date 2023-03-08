@@ -70,7 +70,6 @@ It will create a `~/.cache/sbuild` with sufficient rights for the sbuild process
 
 Run `./build -r <ros_distro> -d <deb_distro>` in a ROS workspace (or the current directory with `./src`) to generate the packages into the `apt_repo` folder.
 You can run `./build -c` to skip already built packages.
-The `rosdep` cache is updated twice within the script to include the packages in the local repo, but reverted to the original cache afterwards.
 
 Run `./repository -r <ros_distro> -d <deb_distro>` to create an apt repository.
 You can directly use it on your local machine by adapting the path from the generated `README.md`.

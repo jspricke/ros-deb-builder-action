@@ -77,7 +77,7 @@ done
 echo "yaml file://$APT_REPO/local.yaml $ROS_DISTRO" > "$APT_REPO/1-local.list"
 echo "$ROSDEP_SOURCE" > "$APT_REPO/2-remote.list"
 
-ROSDEP_SOURCE_PATH="$APT_REPO:/etc/ros/rosdep/sources.list.d/" rosdep update
+ROS_HOME="$APT_REPO/ros" ROSDEP_SOURCE_PATH="$APT_REPO:/etc/ros/rosdep/sources.list.d/" rosdep update
 
 echo "Run sbuild"
 
@@ -99,7 +99,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders || colcon list --topol
     exit
   fi
 
-  bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
+  ROS_HOME="$APT_REPO/ros" bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
 
   # Set the version based on the checked out tag that contain at least on digit
   # strip any leading non digits as they are not part of the version number
@@ -121,7 +121,6 @@ for PKG_PATH in $(catkin_topological_order --only-folders || colcon list --topol
   echo "::endgroup::"
 done
 
-# revert rosdep cache
-rosdep update
+rm -r "$APT_REPO/ros"
 
 ccache -sv
