@@ -66,7 +66,7 @@ jobs:
 You can run this action locally on Ubuntu 22.04 or Debian bookworm and newer system.
 
 Run `./prepare -d <deb_distro>` once to set up the system and/or adapt to your needs.
-It will create a `~/.cache/sbuild` with sufficient rights for the sbuild process, a `~/.sbuildrc` and a `./src` with the checked out repos.
+It will create a `~/.cache/ccache` with sufficient rights for the sbuild process, a `~/.sbuildrc`, a `~/.cache/sbuild` and optionally a `./src` with the checked out repos.
 
 Run `./build -r <ros_distro> -d <deb_distro>` in a ROS workspace (or the current directory with `./src`) to generate the packages into the `apt_repo` folder.
 You can run `./build -c` to skip already built packages.
