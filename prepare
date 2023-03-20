@@ -38,7 +38,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sbuil
 echo "Setup build environment"
 
 mkdir -p "$HOME/.cache/sbuild"
-mmdebstrap --variant=buildd --include=apt,ccache,auto-apt-proxy \
+mmdebstrap --variant=buildd --include=apt,ccache,auto-apt-proxy,ca-certificates \
   --customize-hook='chroot "$1" update-ccache-symlinks' \
   --components=main,universe "$DEB_DISTRO" "$HOME/.cache/sbuild/$DEB_DISTRO-amd64.tar"
 
