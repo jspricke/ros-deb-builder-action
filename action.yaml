@@ -58,6 +58,7 @@ runs:
         ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
         ROSDEP_SOURCE: ${{ inputs.ROSDEP_SOURCE }}
+        SKIP_ROS_REPOSITORY: ${{ inputs.SKIP_ROS_REPOSITORY }}
     - name: Create apt repository and deploy it
       run: $GITHUB_ACTION_PATH/repository
       shell: sh
