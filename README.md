@@ -32,6 +32,11 @@ Additional rosdep sources.
 Don't add packages.ros.org as an apt repository.
 This allows to build against snapshots.ros.org, for example.
 
+## `SKIP_PACKAGES`
+
+Whitespace separated list of ROS package names not to be build.
+Note that you need to list downstream dependencies of skipped packages in addition.
+
 ## `GITHUB_TOKEN`
 
 Set to `${{ secrets.GITHUB_TOKEN }}` to deploy to a `DEB_DISTRO-ROS_DISTRO` branch in the same repo.
