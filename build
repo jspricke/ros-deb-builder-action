@@ -43,29 +43,31 @@ if [ -z "$DISTRIBUTION" ]; then
   fi
 fi
 
-if [ -z "$SKIP_ROS_REPOSITORY" ]; then
-  case $ROS_DISTRO in
-    debian)
-      ;;
-    boxturtle|cturtle|diamondback|electric|fuerte|groovy|hydro|indigo|jade|kinetic|lunar)
-      echo "Unsupported ROS 1 version: $ROS_DISTRO"
-      exit 1
-      ;;
-    melodic|noetic)
-      BLOOM=ros
-      ROS_DEB="$ROS_DISTRO-"
+case $ROS_DISTRO in
+  debian)
+    ;;
+  boxturtle|cturtle|diamondback|electric|fuerte|groovy|hydro|indigo|jade|kinetic|lunar)
+    echo "Unsupported ROS 1 version: $ROS_DISTRO"
+    exit 1
+    ;;
+  melodic|noetic)
+    BLOOM=ros
+    ROS_DEB="$ROS_DISTRO-"
+    if [ -z "$SKIP_ROS_REPOSITORY" ]; then
       curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o "$APT_REPO/ros-archive-keyring.gpg"
       set -- --extra-repository="deb http://packages.ros.org/ros/ubuntu $DEB_DISTRO main" --extra-repository-key="$APT_REPO/ros-archive-keyring.gpg" "$@"
-      ;;
-    *)
-      # assume ROS 2 so we don't have to list versions
-      BLOOM=ros
-      ROS_DEB="$ROS_DISTRO-"
+    fi
+    ;;
+  *)
+    # assume ROS 2 so we don't have to list versions
+    BLOOM=ros
+    ROS_DEB="$ROS_DISTRO-"
+    if [ -z "$SKIP_ROS_REPOSITORY" ]; then
       curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o "$APT_REPO/ros-archive-keyring.gpg"
       set -- --extra-repository="deb http://packages.ros.org/ros2/ubuntu $DEB_DISTRO main" --extra-repository-key="$APT_REPO/ros-archive-keyring.gpg" "$@"
-      ;;
-  esac
-fi
+    fi
+    ;;
+esac
 
 echo "Add unreleased packages to rosdep"
 
