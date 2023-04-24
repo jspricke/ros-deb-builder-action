@@ -59,7 +59,7 @@ EOF
 echo "$SBUILD_CONF" >> "$HOME/.sbuildrc"
 
 
-REPOS_FILE=${REPOS_FILE:-sources.repos}
+REPOS_FILE="${REPOS_FILE:-sources.repos}"
 test ! -f "$REPOS_FILE" && exit
 
 echo "Checkout workspace"
