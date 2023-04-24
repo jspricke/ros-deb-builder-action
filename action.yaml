@@ -14,7 +14,6 @@ inputs:
   REPOS_FILE:
     description: Repos file with list of repositories to package.
     required: false
-    default: sources.repos
   SBUILD_CONF:
     description: Additional sbuild.conf lines. For example EXTRA_REPOSITORIES,
       or VERBOSE. See man sbuild.conf.
