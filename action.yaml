@@ -37,6 +37,9 @@ inputs:
   PACKAGES_BRANCH:
     description: If set, this branch will be used to push the packages instead of DEB_DISTRO-ROS_DISTRO.
     required: false
+  GIT_LFS:
+    description: If set to true, use Git Large File Storage for storing binaries (*.deb and *.ddeb)
+    required: false
 runs:
   using: composite
   steps:
@@ -72,3 +75,4 @@ runs:
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         SQUASH_HISTORY: ${{ inputs.SQUASH_HISTORY }}
         PACKAGES_BRANCH: ${{ inputs.PACKAGES_BRANCH }}
+        GIT_LFS: ${{ inputs.GIT_LFS }}
