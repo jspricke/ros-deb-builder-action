@@ -49,6 +49,10 @@ For example, if you are deploying a static site with lots of binary artifacts, t
 ## ``PACKAGES_BRANCH``
 If set, this branch will be used to push the packages instead of `DEB_DISTRO-ROS_DISTRO`.
 
+## ``GIT_LFS``
+
+If set to true, Git Large File Storage will be used to store the generated binaries.
+
 ## Example usage
 
 ```
