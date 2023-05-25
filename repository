@@ -36,19 +36,19 @@ apt-ftparchive release . > Release
 test -n "$GITHUB_TOKEN" && find . -type f -size +100M -delete
 
 REPOSITORY="$(printf "%s" "$GITHUB_REPOSITORY" | tr / _)"
-BRANCH="$DEB_DISTRO-$ROS_DISTRO"
+test -z "$PACKAGES_BRANCH" && PACKAGES_BRANCH="$DEB_DISTRO-$ROS_DISTRO"
 echo '```bash' > README.md
-echo "echo \"deb [trusted=yes] https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$BRANCH/ ./\" | sudo tee /etc/apt/sources.list.d/$REPOSITORY.list" >> README.md
-echo "echo \"yaml https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$BRANCH/local.yaml $ROS_DISTRO\" | sudo tee /etc/ros/rosdep/sources.list.d/1-$REPOSITORY.list" >> README.md
+echo "echo \"deb [trusted=yes] https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$PACKAGES_BRANCH/ ./\" | sudo tee /etc/apt/sources.list.d/$REPOSITORY.list" >> README.md
+echo "echo \"yaml https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$PACKAGES_BRANCH/local.yaml $ROS_DISTRO\" | sudo tee /etc/ros/rosdep/sources.list.d/1-$REPOSITORY.list" >> README.md
 echo '```' >> README.md
 
 test -z "$GITHUB_TOKEN" && exit
 
-git init -b "$BRANCH"
+git init -b "$PACKAGES_BRANCH"
 git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 if [ "$SQUASH_HISTORY" != "true" ]; then
-  git fetch origin "$BRANCH" && git reset --soft FETCH_HEAD || true
+  git fetch origin "$PACKAGES_BRANCH" && git reset --soft FETCH_HEAD || true
 fi
 git add .
 git -c user.name=Github -c user.email=none commit --message="Generated from $(git -C .. rev-parse --short HEAD)"
-git push --force origin "$BRANCH"
+git push --force origin "$PACKAGES_BRANCH"
