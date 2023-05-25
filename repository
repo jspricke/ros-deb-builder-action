@@ -36,7 +36,7 @@ apt-ftparchive release . > Release
 test -n "$GITHUB_TOKEN" && find . -type f -size +100M -delete
 
 REPOSITORY="$(printf "%s" "$GITHUB_REPOSITORY" | tr / _)"
-BRANCH="$DEB_DISTRO-$ROS_DISTRO"
+BRANCH="${PACKAGES_BRANCH:-$DEB_DISTRO-$ROS_DISTRO}"
 echo '```bash' > README.md
 echo "echo \"deb [trusted=yes] https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$BRANCH/ ./\" | sudo tee /etc/apt/sources.list.d/$REPOSITORY.list" >> README.md
 echo "echo \"yaml https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$BRANCH/local.yaml $ROS_DISTRO\" | sudo tee /etc/ros/rosdep/sources.list.d/1-$REPOSITORY.list" >> README.md
