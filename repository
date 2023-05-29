@@ -49,8 +49,9 @@ git init -b "$BRANCH"
 test -n "$GIT_LFS" && git lfs track "*.deb" "*.ddeb"
 
 git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-if [ "$SQUASH_HISTORY" != "true" ]; then
-  git fetch origin "$BRANCH" && git reset --soft FETCH_HEAD || true
+if [ -n "$SQUASH_HISTORY" ]; then
+  git fetch origin "$BRANCH" || true
+  git reset --soft FETCH_HEAD || true
 fi
 git add .
 git -c user.name=Github -c user.email=none commit --message="Generated from $(git -C .. rev-parse --short HEAD)"

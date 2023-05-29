@@ -73,6 +73,6 @@ runs:
         ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-        SQUASH_HISTORY: ${{ inputs.SQUASH_HISTORY }}
+        SQUASH_HISTORY: ${{ inputs.SQUASH_HISTORY == 'true' && 'true' || '' }}
         PACKAGES_BRANCH: ${{ inputs.PACKAGES_BRANCH }}
-        GIT_LFS: ${{ inputs.GIT_LFS }}
+        GIT_LFS: ${{ inputs.GIT_LFS == 'true' && 'true' || '' }}
