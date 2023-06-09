@@ -103,7 +103,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders || colcon list --topol
     exit
   fi
 
-  ROS_HOME="$APT_REPO/ros" bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
+  ROS_HOME="$APT_REPO/ros" BLOOM_SKIP_ROSDEP_UPDATE=1 bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
 
   # Set the version based on the checked out tag that contain at least on digit
   # strip any leading non digits as they are not part of the version number
