@@ -32,14 +32,14 @@ sudo apt update
 # second is for Debian bookworm and newer
 # third is for OSRF package names
 # TODO: get OSRF to add proper package relations
-sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache uidmap vcstool python3-rosdep2 catkin python3-bloom curl apt-cacher-ng git-lfs || \
-sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache uidmap vcstool python3-rosdep2 colcon python3-colcon-package-information python3-colcon-ros python3-bloom curl apt-cacher-ng git-lfs || \
-sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache uidmap python3-vcstool python3-rosdep python3-colcon-cmake python3-colcon-installed-package-information python3-colcon-library-path python3-colcon-package-information python3-colcon-pkg-config python3-colcon-recursive-crawl python3-colcon-test-result python3-bloom curl apt-cacher-ng git-lfs
+sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache uidmap vcstool python3-rosdep2 catkin python3-bloom curl git-lfs || \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache uidmap vcstool python3-rosdep2 colcon python3-colcon-package-information python3-colcon-ros python3-bloom curl git-lfs || \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache uidmap python3-vcstool python3-rosdep python3-colcon-cmake python3-colcon-installed-package-information python3-colcon-library-path python3-colcon-package-information python3-colcon-pkg-config python3-colcon-recursive-crawl python3-colcon-test-result python3-bloom curl git-lfs
 
 echo "Setup build environment"
 
 mkdir -p "$HOME/.cache/sbuild"
-mmdebstrap --variant=buildd --include=apt,ccache,auto-apt-proxy,ca-certificates \
+mmdebstrap --variant=buildd --include=apt,ccache,ca-certificates \
   --customize-hook='chroot "$1" update-ccache-symlinks' \
   --components=main,universe "$DEB_DISTRO" "$HOME/.cache/sbuild/$DEB_DISTRO-amd64.tar"
 
