@@ -38,8 +38,8 @@ test -n "$GITHUB_TOKEN" && find . -type f -size +100M -delete
 REPOSITORY="$(printf "%s" "$GITHUB_REPOSITORY" | tr / _)"
 BRANCH="${PACKAGES_BRANCH:-$DEB_DISTRO-$ROS_DISTRO}"
 echo '```bash' > README.md
-echo "echo \"deb [trusted=yes] https://github.com/$GITHUB_REPOSITORY/raw/$BRANCH/ ./\" | sudo tee /etc/apt/sources.list.d/$REPOSITORY.list" >> README.md
-echo "echo \"yaml https://github.com/$GITHUB_REPOSITORY/raw/$BRANCH/local.yaml $ROS_DISTRO\" | sudo tee /etc/ros/rosdep/sources.list.d/1-$REPOSITORY.list" >> README.md
+echo "echo \"deb [trusted=yes] $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/raw/$BRANCH/ ./\" | sudo tee /etc/apt/sources.list.d/$REPOSITORY.list" >> README.md
+echo "echo \"yaml https://$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/raw/$BRANCH/local.yaml $ROS_DISTRO\" | sudo tee /etc/ros/rosdep/sources.list.d/1-$REPOSITORY.list" >> README.md
 echo '```' >> README.md
 
 test -z "$GITHUB_TOKEN" && exit
@@ -48,7 +48,7 @@ git init -b "$BRANCH"
 
 test -n "$GIT_LFS" && git lfs track "*.deb" "*.ddeb"
 
-git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+git remote add origin "$(echo "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git" | sed "s#https://#https://x-access-token:${GITHUB_TOKEN}@#")"
 if [ -n "$SQUASH_HISTORY" ]; then
   git fetch origin "$BRANCH" || true
   git reset --soft FETCH_HEAD || true
