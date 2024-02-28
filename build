@@ -81,6 +81,12 @@ echo "$ROSDEP_SOURCE" > "$APT_REPO/2-remote.list"
 
 ROS_HOME="$APT_REPO/ros" ROSDEP_SOURCE_PATH="$APT_REPO:/etc/ros/rosdep/sources.list.d/" rosdep update
 
+echo "Run pre-build hook"
+
+if [ -n "$PRE_BUILD_HOOK" ]; then
+  eval "$PRE_BUILD_HOOK"
+fi
+
 echo "Run sbuild"
 
 # Don't build tests

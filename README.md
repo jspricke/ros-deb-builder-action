@@ -53,6 +53,10 @@ If set, this branch will be used to push the packages instead of `DEB_DISTRO-ROS
 
 If set to true, Git Large File Storage will be used to store the generated binaries.
 
+## ``PRE_BUILD_HOOK``
+
+TODO
+
 ## Example usage
 
 ```

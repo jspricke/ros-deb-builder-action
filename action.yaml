@@ -40,6 +40,9 @@ inputs:
   GIT_LFS:
     description: If set to true, use Git Large File Storage for storing binaries (*.deb and *.ddeb)
     required: false
+  PRE_BUILD_HOOK:
+    description: If set, this script will be executed before running sbuild.
+    required: false
 runs:
   using: composite
   steps:
@@ -76,3 +79,4 @@ runs:
         SQUASH_HISTORY: ${{ inputs.SQUASH_HISTORY == 'true' && 'true' || '' }}
         PACKAGES_BRANCH: ${{ inputs.PACKAGES_BRANCH }}
         GIT_LFS: ${{ inputs.GIT_LFS == 'true' && 'true' || '' }}
+        PRE_BUILD_HOOK: ${{ inputs.PRE_BUILD_HOOK }}
