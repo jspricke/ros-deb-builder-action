@@ -69,6 +69,7 @@ runs:
         ROSDEP_SOURCE: ${{ inputs.ROSDEP_SOURCE }}
         SKIP_ROS_REPOSITORY: ${{ inputs.SKIP_ROS_REPOSITORY }}
         SKIP_PACKAGES: ${{ inputs.SKIP_PACKAGES }}
+        PRE_BUILD_HOOK: ${{ inputs.PRE_BUILD_HOOK }}
     - name: Create apt repository and deploy it
       run: $GITHUB_ACTION_PATH/repository
       shell: sh
@@ -79,4 +80,3 @@ runs:
         SQUASH_HISTORY: ${{ inputs.SQUASH_HISTORY == 'true' && 'true' || '' }}
         PACKAGES_BRANCH: ${{ inputs.PACKAGES_BRANCH }}
         GIT_LFS: ${{ inputs.GIT_LFS == 'true' && 'true' || '' }}
-        PRE_BUILD_HOOK: ${{ inputs.PRE_BUILD_HOOK }}
