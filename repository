@@ -1,6 +1,11 @@
 #!/bin/sh
 # SPDX-License-Identifier: BSD-3-Clause
 
+# defaults
+. /etc/os-release
+DEB_DISTRO="${DEB_DISTRO:-$VERSION_CODENAME}"
+DEB_ARCH="${DEB_ARCH:-$(dpkg --print-architecture)}"
+
 while getopts a:d:hr: OPTCHAR; do
   case "$OPTCHAR" in
     a)
