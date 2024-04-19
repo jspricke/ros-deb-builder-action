@@ -1,8 +1,11 @@
 #!/bin/sh
 # SPDX-License-Identifier: BSD-3-Clause
 
-while getopts cd:hr: OPTCHAR; do
+while getopts a:cd:hr: OPTCHAR; do
   case "$OPTCHAR" in
+    a)
+      DEB_ARCH="$OPTARG"
+      ;;
     c)
       CONTINUE_PACKAGE_GENERATION=1
       ;;
@@ -10,7 +13,8 @@ while getopts cd:hr: OPTCHAR; do
       DEB_DISTRO="$OPTARG"
       ;;
     h)
-      echo "usage: $0 [-c]"
+      echo "usage: $0 [-a] [-c] [-d] [-r]"
+      echo "  -a The architecture to compile for."
       echo "  -c To continue at the last package and skip those already built."
       echo "  -d The Debian/Ubuntu distribution codename to compile for."
       echo "  -r The ROS distribution codename to compile for."
@@ -113,7 +117,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders || colcon list --topol
   echo 11 > debian/compat
 
   # dpkg-source-opts: no need for upstream.tar.gz
-  sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian --arch=arm64 \
+  sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian --arch="$DEB_ARCH" \
     --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir="$APT_REPO" \
     --extra-package="$APT_REPO" "$@"
 

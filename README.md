@@ -12,6 +12,10 @@ Convert ROS packages to Debian packages.
 
 **Required** The Debian/Ubuntu distribution codename to compile for.
 
+## `DEB_ARCH`
+
+The architecture (`amd64`, `arm64`, ...) to compile for.
+
 ## `REPOS_FILE`
 
 Repos file with list of repositories to package.
@@ -77,13 +81,13 @@ jobs:
 
 You can run this action locally on Ubuntu 22.04 or Debian bookworm and newer system.
 
-Run `./prepare -d <deb_distro>` once to set up the system and/or adapt to your needs.
+Run `./prepare -d <deb_distro> -a <arch>` once to set up the system and/or adapt to your needs.
 It will create a `~/.cache/ccache` with sufficient rights for the sbuild process, a `~/.sbuildrc`, a `~/.cache/sbuild` and optionally a `./src` with the checked out repos.
 
-Run `./build -r <ros_distro> -d <deb_distro>` in a ROS workspace (or the current directory with `./src`) to generate the packages into the `apt_repo` folder.
+Run `./build -r <ros_distro> -d <deb_distro> -a <arch>` in a ROS workspace (or the current directory with `./src`) to generate the packages into the `apt_repo` folder.
 You can run `./build -c` to skip already built packages.
 
-Run `./repository -r <ros_distro> -d <deb_distro>` to create an apt repository.
+Run `./repository -r <ros_distro> -d <deb_distro> -a <arch>` to create an apt repository.
 You can directly use it on your local machine by adapting the path from the generated `README.md`.
 
 ## FAQ

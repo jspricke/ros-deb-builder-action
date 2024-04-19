@@ -1,13 +1,17 @@
 #!/bin/sh
 # SPDX-License-Identifier: BSD-3-Clause
 
-while getopts d:h OPTCHAR; do
+while getopts a:d:h OPTCHAR; do
   case "$OPTCHAR" in
+    a)
+      DEB_ARCH="$OPTARG"
+      ;;
     d)
       DEB_DISTRO="$OPTARG"
       ;;
     h)
-      echo "usage: $0 [-d]"
+      echo "usage: $0 [-a] [-d]"
+      echo "  -a To specify the architecture of the chroot."
       echo "  -d To specify the distribution of the chroot."
       exit
       ;;
@@ -39,9 +43,9 @@ sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sbuil
 echo "Setup build environment"
 
 mkdir -p "$HOME/.cache/sbuild"
-mmdebstrap --variant=buildd --include=apt,ccache,ca-certificates --arch=arm64 \
+mmdebstrap --variant=buildd --include=apt,ccache,ca-certificates --arch="$DEB_ARCH" \
   --customize-hook='chroot "$1" update-ccache-symlinks' \
-  --components=main,universe "$DEB_DISTRO" "$HOME/.cache/sbuild/$DEB_DISTRO-amd64.tar"
+  --components=main,universe "$DEB_DISTRO" "$HOME/.cache/sbuild/$DEB_DISTRO-$DEB_ARCH.tar"
 
 ccache --zero-stats --max-size=10.0G
 

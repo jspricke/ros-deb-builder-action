@@ -11,6 +11,9 @@ inputs:
   DEB_DISTRO:
     description: The Debian/Ubuntu distribution codename to compile for.
     required: true
+  DEB_ARCH:
+    description: The architecture (`amd64`, `arm64`, ...) to compile for.
+    required: false
   REPOS_FILE:
     description: Repos file with list of repositories to package.
     required: false
@@ -49,12 +52,13 @@ runs:
       uses: actions/cache@v3
       with:
         path: /home/runner/.cache/ccache
-        key: ccache-${{ inputs.DEB_DISTRO }}-${{ inputs.ROS_DISTRO }}
+        key: ccache-${{ inputs.DEB_DISTRO }}-${{ inputs.DEB_ARCH }}-${{ inputs.ROS_DISTRO }}
     - name: Setup build environment
       run: $GITHUB_ACTION_PATH/prepare
       shell: sh
       env:
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
+        DEB_ARCH: ${{ inputs.DEB_ARCH }}
         REPOS_FILE: ${{ inputs.REPOS_FILE }}
         SBUILD_CONF: ${{ inputs.SBUILD_CONF }}
     - name: Create packages
@@ -63,6 +67,7 @@ runs:
       env:
         ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
+        DEB_ARCH: ${{ inputs.DEB_ARCH }}
         ROSDEP_SOURCE: ${{ inputs.ROSDEP_SOURCE }}
         SKIP_ROS_REPOSITORY: ${{ inputs.SKIP_ROS_REPOSITORY }}
         SKIP_PACKAGES: ${{ inputs.SKIP_PACKAGES }}
@@ -72,6 +77,7 @@ runs:
       env:
         ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
+        DEB_ARCH: ${{ inputs.DEB_ARCH }}
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         SQUASH_HISTORY: ${{ inputs.SQUASH_HISTORY == 'true' && 'true' || '' }}
         PACKAGES_BRANCH: ${{ inputs.PACKAGES_BRANCH }}
