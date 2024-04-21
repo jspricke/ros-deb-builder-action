@@ -33,7 +33,7 @@ echo "Install dependencies"
 set -ex
 
 # TODO: drop once new distros are available
-test "$VERSION_CODENAME" = "jammy" && sudo add-apt-repository -y ppa:v-launchpad-jochen-sprickerhof-de/sbuild
+test "$VERSION_CODENAME" = "jammy" && sudo apt install -y software-properties-common && sudo add-apt-repository -y ppa:v-launchpad-jochen-sprickerhof-de/sbuild
 sudo apt update
 
 # Try different package combinations:
