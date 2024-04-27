@@ -4,7 +4,6 @@
 # defaults
 . /etc/os-release
 DEB_DISTRO="${DEB_DISTRO:-$VERSION_CODENAME}"
-DEB_ARCH="${DEB_ARCH:-$(dpkg --print-architecture)}"
 
 while getopts a:cd:hr: OPTCHAR; do
   case "$OPTCHAR" in
@@ -98,6 +97,8 @@ export DEB_BUILD_OPTIONS=nocheck
 TOTAL="$( (catkin_topological_order --only-names || colcon list --topological-order --names-only) | wc -l)"
 COUNT=1
 
+test -n "$DEB_ARCH" && set -- --arch="$DEB_ARCH" "$@"
+
 for PKG_PATH in $(catkin_topological_order --only-folders || colcon list --topological-order --paths-only); do
   echo "::group::Building $COUNT/$TOTAL: $PKG_PATH"
   (
@@ -122,7 +123,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders || colcon list --topol
   echo 11 > debian/compat
 
   # dpkg-source-opts: no need for upstream.tar.gz
-  sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian --arch="$DEB_ARCH" \
+  sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
     --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir="$APT_REPO" \
     --extra-package="$APT_REPO" "$@"
 
