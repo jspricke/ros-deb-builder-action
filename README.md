@@ -43,7 +43,7 @@ Note that you need to list downstream dependencies of skipped packages in additi
 
 ## `GITHUB_TOKEN`
 
-Set to `${{ secrets.GITHUB_TOKEN }}` to deploy to a `DEB_DISTRO-ROS_DISTRO` branch in the same repo.
+Set to `${{ secrets.GITHUB_TOKEN }}` to deploy to a `$DEB_DISTRO-$ROS_DISTRO-$DEB_ARCH` branch in the same repo.
 
 ## ``SQUASH_HISTORY``
 
@@ -51,7 +51,7 @@ If set to true, all previous commits on the target branch will be discarded.
 For example, if you are deploying a static site with lots of binary artifacts, this can help prevent the repository from becoming overly bloated
 
 ## ``PACKAGES_BRANCH``
-If set, this branch will be used to push the packages instead of `DEB_DISTRO-ROS_DISTRO`.
+If set, this branch will be used to push the packages instead of `$DEB_DISTRO-$ROS_DISTRO-$DEB_ARCH`.
 
 ## ``GIT_LFS``
 
