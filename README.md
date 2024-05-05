@@ -41,6 +41,10 @@ This allows to build against snapshots.ros.org, for example.
 Whitespace separated list of ROS package names not to be build.
 Note that you need to list downstream dependencies of skipped packages in addition.
 
+## `SKIP_CHECKOUT`
+
+Do not check out the repository. This allows you to manually construct a repos file or workspace.
+
 ## `GITHUB_TOKEN`
 
 Set to `${{ secrets.GITHUB_TOKEN }}` to deploy to a `$DEB_DISTRO-$ROS_DISTRO-$DEB_ARCH` branch in the same repo.
