@@ -52,7 +52,7 @@ runs:
   steps:
     - name: Check out the repo
       uses: actions/checkout@v3
-      if: ${{ inputs.SKIP_CHECKOUT == 'true' && 'true' || '' }}
+      if: ${{ inputs.SKIP_CHECKOUT == 'false' }}
     - name: Cache ccache
       uses: actions/cache@v3
       with:
