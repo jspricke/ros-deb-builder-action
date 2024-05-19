@@ -42,7 +42,7 @@ if [ "$DEB_ARCH" != "$(dpkg --print-architecture)" ]; then
   # use qemu to translate architecture
   sudo apt install -y --no-install-recommends qemu-user-static arch-test
   if [ "$VERSION_CODENAME" = "jammy" ]; then
-    # manally enable binfmt_misc on Ubuntu 22.04 Docker images
+    # manually enable binfmt_misc on Ubuntu 22.04 Docker images
     sudo apt install -y --no-install-recommends binfmt-support
     arch-test "$DEB_ARCH" || sudo update-binfmts --enable
   fi
@@ -53,7 +53,7 @@ fi
 # second is for Debian bookworm and newer
 # third is for OSRF package names
 # TODO: get OSRF to add proper package relations
-sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends vcstool python3-rosdep2 catkin python3-bloom || \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends vcstool python3-rosdep2 python3-bloom || \
 sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends vcstool python3-rosdep2 colcon python3-colcon-package-information python3-colcon-ros python3-bloom || \
 sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends python3-vcstool python3-rosdep python3-colcon-cmake python3-colcon-installed-package-information python3-colcon-library-path python3-colcon-package-information python3-colcon-pkg-config python3-colcon-recursive-crawl python3-colcon-test-result python3-bloom
 

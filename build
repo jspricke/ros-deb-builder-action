@@ -81,7 +81,7 @@ echo "Add unreleased packages to rosdep"
 
 set -ex
 
-for PKG in $(catkin_topological_order --only-names || colcon list --topological-order --names-only); do
+for PKG in $(colcon list --topological-order --names-only); do
   printf "%s:\n  %s:\n  - %s\n" "$PKG" "$DISTRIBUTION" "ros-$ROS_DEB$(printf '%s' "$PKG" | tr '_' '-')" >> "$APT_REPO/local.yaml"
 done
 echo "yaml file://$APT_REPO/local.yaml $ROS_DISTRO" > "$APT_REPO/1-local.list"
@@ -94,16 +94,16 @@ echo "Run sbuild"
 # Don't build tests
 export DEB_BUILD_OPTIONS=nocheck
 
-TOTAL="$( (catkin_topological_order --only-names || colcon list --topological-order --names-only) | wc -l)"
+TOTAL="$( (colcon list --topological-order --names-only) | wc -l)"
 COUNT=1
 
 test -n "$DEB_ARCH" && set -- --arch="$DEB_ARCH" "$@"
 
-for PKG_PATH in $(catkin_topological_order --only-folders || colcon list --topological-order --paths-only); do
+for PKG_PATH in $(colcon list --topological-order --paths-only); do
   echo "::group::Building $COUNT/$TOTAL: $PKG_PATH"
   (
   cd "$PKG_PATH"
-  ROS_PACKAGE="$(catkin_topological_order --only-names || colcon list --topological-order --names-only)"
+  ROS_PACKAGE="$(colcon list --topological-order --names-only)"
   test -f "$PKG_PATH/CATKIN_IGNORE" && echo "$ROS_PACKAGE Skipped (CATKIN_IGNORE)" && exit
   test -f "$PKG_PATH/COLCON_IGNORE" && echo "$ROS_PACKAGE Skipped (COLCON_IGNORE)" && exit
   case " $SKIP_PACKAGES " in *" $ROS_PACKAGE "*) echo "$ROS_PACKAGE Skipped (in \$SKIP_PACKAGES)"; exit ;; esac
