@@ -72,7 +72,7 @@ on:
 
 jobs:
   build_testing:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: jspricke/ros-deb-builder-action@main
         with:
@@ -110,6 +110,14 @@ At the bottom there is "Workflow permissions", make sure "Read and write permiss
 
 Github has a hard limit of 100MB per file, so the Action deletes bigger files before pushing.
 You could omit the `GITHUB_TOKEN` and add your own deploy method as a final step.
+
+### The build needs network access
+
+sbuild denies network access during the build by default as per Debian policy 4.9.
+To allow network access use:
+```
+SBUILD_CONF="$enable_network = 0;"
+```
 
 ### How to use a private repo as an apt source
 
