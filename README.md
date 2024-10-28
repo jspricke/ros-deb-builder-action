@@ -114,9 +114,9 @@ You could omit the `GITHUB_TOKEN` and add your own deploy method as a final step
 ### The build needs network access
 
 sbuild denies network access during the build by default as per Debian policy 4.9.
-To allow network access use:
+To allow network access use in the action:
 ```
-SBUILD_CONF="$enable_network = 1;"
+SBUILD_CONF: "$enable_network = 1;"
 ```
 
 ### How to use a private repo as an apt source
