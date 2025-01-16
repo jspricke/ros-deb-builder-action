@@ -52,12 +52,12 @@ sudo mkdir /etc/apt-cacher-ng
 echo 'VfileUseRangeOps: 0' | sudo tee /etc/apt-cacher-ng/zzz_override.conf
 
 # Try different package combinations:
-# first is for a clean jammy with the PPA
-# second is for Debian bookworm and newer
+# first is for Debian bookworm and newer resp. Ubuntu noble with the PPA
+# second is for a clean Ubuntu jammy with the PPA
 # third is for OSRF package names
 # TODO: get OSRF to add proper package relations
-sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends apt-cacher-ng vcstool python3-rosdep2 catkin python3-bloom || \
 sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends apt-cacher-ng vcstool python3-rosdep2 colcon python3-colcon-package-information python3-colcon-ros python3-bloom || \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends apt-cacher-ng vcstool python3-rosdep2 catkin python3-bloom || \
 sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends apt-cacher-ng python3-vcstool python3-rosdep python3-colcon-cmake python3-colcon-installed-package-information python3-colcon-library-path python3-colcon-package-information python3-colcon-pkg-config python3-colcon-recursive-crawl python3-colcon-test-result python3-bloom
 
 echo "Setup build environment"
