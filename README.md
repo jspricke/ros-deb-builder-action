@@ -133,7 +133,7 @@ Rosdep doesn't support authentication with private repos, so as a workaround you
 
 ```bash
 # Download the local.yaml file to a path of your choice
-curl -H "Authorization: token <your_PAT_token>" https://raw.githubusercontent.com/<user>/<repo>/<branch>/local.yaml > /etc/ros/rosdep/mappings-<repo>.yaml
+curl -H "Authorization: token <your_PAT_token>" https://raw.githubusercontent.com/<user>/<repo_name>/<branch>/local.yaml > /etc/ros/rosdep/mappings-<repo_name>.yaml
 
 # Add the file to rosdep sources instead of the github url
 echo "yaml file:///etc/ros/rosdep/mappings-<repo_name>.yaml <ros_distro>" | sudo tee /etc/ros/rosdep/sources.list.d/1-<repo_name>.list
