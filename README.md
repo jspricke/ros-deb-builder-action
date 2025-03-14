@@ -129,16 +129,14 @@ echo -e "machine raw.githubusercontent.com\nlogin <TOKEN>" | sudo tee /etc/apt/a
 
 ### How to use a private repo as a rosdep source
 
-Rosdep doesn't support authentication with private repose, so as a workaround you'll have to manually download the `local.yaml` file and reference that file in rosdep sources instead of the github url.
+Rosdep doesn't support authentication with private repos, so as a workaround you'll have to manually download the `local.yaml` file and reference that file in rosdep sources instead of the github url.
 
 ```bash
-# Download the local.yaml file to path of your choice
-curl -H "Authorization: token <your_PAT_token>" -L https://raw.githubusercontent.com/<user>/<repo>/<branch>/local.yaml > local.yaml
+# Download the local.yaml file to a path of your choice
+curl -H "Authorization: token <your_PAT_token>" https://raw.githubusercontent.com/<user>/<repo>/<branch>/local.yaml > /etc/ros/rosdep/mappings-<repo>.yaml
 
-# Add the local.yaml file to rosdep sources instead of the github url
-echo "yaml file://<absolute_path_to_local.yaml> <ros_distro>" | sudo tee /etc/ros/rosdep/sources.list.d/1-<repo_name>.list
+# Add the file to rosdep sources instead of the github url
+echo "yaml file:///etc/ros/rosdep/mappings-<repo_name>.yaml <ros_distro>" | sudo tee /etc/ros/rosdep/sources.list.d/1-<repo_name>.list
 ```
-
-For example: `yaml file:///home/user/rosdep/local.yaml rolling`
 
 Now the typical `rosdep update` and `rosdep install` commands should work as expected, but remember to redownload the `local.yaml` when there are changes to the packages.
