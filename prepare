@@ -42,7 +42,7 @@ if [ "$DEB_ARCH" != "$(dpkg --print-architecture)" ]; then
   # use qemu to translate architecture
   sudo apt install -y --no-install-recommends qemu-user-static arch-test
   if [ "$VERSION_CODENAME" = "jammy" ]; then
-    # manally enable binfmt_misc on Ubuntu 22.04 Docker images
+    # manually enable binfmt_misc on Ubuntu 22.04 Docker images
     sudo apt install -y --no-install-recommends binfmt-support
     arch-test "$DEB_ARCH" || sudo update-binfmts --enable
   fi
@@ -90,4 +90,4 @@ REPOS_FILE="${REPOS_FILE:-sources.repos}"
 echo "Checkout workspace"
 
 mkdir src
-vcs import --recursive --input  "$REPOS_FILE" src
+vcs import --recursive --shallow --input  "$REPOS_FILE" src
