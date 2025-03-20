@@ -77,6 +77,7 @@ runs:
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
         DEB_ARCH: ${{ inputs.DEB_ARCH }}
         ROSDEP_SOURCE: ${{ inputs.ROSDEP_SOURCE }}
+        COLCON_DEFAULTS_FILE: ${{ inputs.COLCON_DEFAULTS_FILE }}
         SKIP_ROS_REPOSITORY: ${{ inputs.SKIP_ROS_REPOSITORY }}
         SKIP_PACKAGES: ${{ inputs.SKIP_PACKAGES }}
     - name: Create apt repository and deploy it
