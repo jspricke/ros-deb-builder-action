@@ -103,7 +103,7 @@ for PKG_PATH in $(colcon list --topological-order --paths-only || catkin_topolog
   echo "::group::Building $COUNT/$TOTAL: $PKG_PATH"
   (
   cd "$PKG_PATH"
-  ROS_PACKAGE="$(colcon list --topological-order --names-only || catkin_topological_order --only-names)"
+  ROS_PACKAGE="$(COLCON_DEFAULTS_FILE="" colcon list --topological-order --names-only || catkin_topological_order --only-names)"
   test -f "$PKG_PATH/CATKIN_IGNORE" && echo "$ROS_PACKAGE Skipped (CATKIN_IGNORE)" && exit
   test -f "$PKG_PATH/COLCON_IGNORE" && echo "$ROS_PACKAGE Skipped (COLCON_IGNORE)" && exit
   case " $SKIP_PACKAGES " in *" $ROS_PACKAGE "*) echo "$ROS_PACKAGE Skipped (in \$SKIP_PACKAGES)"; exit ;; esac

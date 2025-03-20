@@ -24,6 +24,9 @@ inputs:
   ROSDEP_SOURCE:
     description: Additional rosdep sources.
     required: false
+  COLCON_DEFAULTS_FILE:
+    description: Defaults file for colcon. Can be used to restrict the packages to build.
+    required: false
   SKIP_ROS_REPOSITORY:
     description: Don't add packages.ros.org as an apt repository. This allows to build against snapshots.ros.org, for example.
     required: false
