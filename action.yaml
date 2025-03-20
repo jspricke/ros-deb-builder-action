@@ -24,6 +24,9 @@ inputs:
   ROSDEP_SOURCE:
     description: Additional rosdep sources.
     required: false
+  COLCON_DEFAULTS_FILE:
+    description: Defaults file for colcon. Can be used to restrict the packages to build.
+    required: false
   SKIP_ROS_REPOSITORY:
     description: Don't add packages.ros.org as an apt repository. This allows to build against snapshots.ros.org, for example.
     required: false
@@ -74,6 +77,7 @@ runs:
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
         DEB_ARCH: ${{ inputs.DEB_ARCH }}
         ROSDEP_SOURCE: ${{ inputs.ROSDEP_SOURCE }}
+        COLCON_DEFAULTS_FILE: ${{ inputs.COLCON_DEFAULTS_FILE }}
         SKIP_ROS_REPOSITORY: ${{ inputs.SKIP_ROS_REPOSITORY }}
         SKIP_PACKAGES: ${{ inputs.SKIP_PACKAGES }}
     - name: Create apt repository and deploy it

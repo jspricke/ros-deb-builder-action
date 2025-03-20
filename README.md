@@ -31,6 +31,18 @@ See man sbuild.conf.
 
 Additional rosdep sources.
 
+## `COLCON_DEFAULTS_FILE`
+
+Defaults file for colcon. Can be used to restrict the packages to build.
+Example of a colcon file:
+```yaml
+list:
+  packages-up-to:
+    - package1
+    - package2
+```
+
+
 ## `SKIP_ROS_REPOSITORY`
 
 Don't add packages.ros.org as an apt repository.
