@@ -50,6 +50,7 @@ fi
 
 sudo mkdir /etc/apt-cacher-ng
 echo 'VfileUseRangeOps: 0' | sudo tee /etc/apt-cacher-ng/zzz_override.conf
+echo 'DlMaxRetries: 200' | sudo tee -a /etc/apt-cacher-ng/zzz_override.conf
 
 # Try different package combinations:
 # first is for Debian bookworm and newer resp. Ubuntu noble with the PPA
