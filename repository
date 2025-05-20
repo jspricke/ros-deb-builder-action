@@ -6,6 +6,7 @@
 DEB_DISTRO="${DEB_DISTRO:-$VERSION_CODENAME}"
 DEB_ARCH="${DEB_ARCH:-$(dpkg --print-architecture)}"
 WS_PATH="/tmp/ws/"
+APT_REPO="/tmp/apt_repo/"
 
 while getopts a:d:hr: OPTCHAR; do
   case "$OPTCHAR" in
@@ -35,9 +36,9 @@ shift "$((OPTIND - 1))"
 
 set -ex
 
-test -d "$WS_PATH" && vcs export "$WS_PATH" --exact-with-tags > apt_repo/sources.repos
+test -d "$WS_PATH" && vcs export "$WS_PATH" --exact-with-tags > "$APT_REPO/sources.repos"
 
-cd apt_repo
+cd "$APT_REPO"
 
 apt-ftparchive packages . > Packages
 apt-ftparchive release . > Release

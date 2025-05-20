@@ -37,9 +37,9 @@ done
 shift "$((OPTIND - 1))"
 
 # make output directory
-test -z "$CONTINUE_PACKAGE_GENERATION" && rm -rf apt_repo
-mkdir -p apt_repo
-APT_REPO="$(pwd)/apt_repo"
+APT_REPO="/tmp/apt_repo/"
+test -z "$CONTINUE_PACKAGE_GENERATION" && rm -rf "$APT_REPO"
+mkdir -p "$APT_REPO"
 
 if [ -z "$DISTRIBUTION" ]; then
   if debian-distro-info --all | grep -q "$DEB_DISTRO"; then
