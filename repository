@@ -5,6 +5,7 @@
 . /etc/os-release
 DEB_DISTRO="${DEB_DISTRO:-$VERSION_CODENAME}"
 DEB_ARCH="${DEB_ARCH:-$(dpkg --print-architecture)}"
+WS_PATH="/tmp/ws/"
 
 while getopts a:d:hr: OPTCHAR; do
   case "$OPTCHAR" in
@@ -34,7 +35,7 @@ shift "$((OPTIND - 1))"
 
 set -ex
 
-test -d src && vcs export src --exact-with-tags > apt_repo/sources.repos
+test -d "$WS_PATH" && vcs export "$WS_PATH" --exact-with-tags > apt_repo/sources.repos
 
 cd apt_repo
 

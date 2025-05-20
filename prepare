@@ -5,6 +5,7 @@
 . /etc/os-release
 DEB_DISTRO="${DEB_DISTRO:-$VERSION_CODENAME}"
 DEB_ARCH="${DEB_ARCH:-$(dpkg --print-architecture)}"
+WS_PATH="/tmp/ws/"
 
 while getopts a:d:h OPTCHAR; do
   case "$OPTCHAR" in
@@ -85,5 +86,5 @@ REPOS_FILE="${REPOS_FILE:-sources.repos}"
 
 echo "Checkout workspace"
 
-mkdir src
-vcs import --recursive --input  "$REPOS_FILE" src
+mkdir -p "$WS_PATH"
+vcs import --recursive --input  "$REPOS_FILE" "$WS_PATH"
