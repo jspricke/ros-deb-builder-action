@@ -80,8 +80,8 @@ $verbose = 1;
 EOF
 echo "$SBUILD_CONF" >> "$HOME/.sbuildrc"
 
-test -z "$REPOS_FILE" -a ! -f sources.repos && exit
-REPOS_FILE="${REPOS_FILE:-sources.repos}"
+test -z "$REPOS_FILE" -a ! -f repo/sources.repos && exit
+REPOS_FILE="${REPOS_FILE:-repo/sources.repos}"
 
 echo "Checkout workspace"
 
