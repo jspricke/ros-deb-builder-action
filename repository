@@ -69,5 +69,5 @@ if [ -z "$SQUASH_HISTORY" ]; then
   git reset --soft FETCH_HEAD || true
 fi
 git add .
-git -c user.name=Github -c user.email=none commit --message="Generated from $(git -C .. rev-parse --short HEAD)"
+git -c user.name=Github -c user.email=none commit --message="Generated from $(git -C ../repo rev-parse --short HEAD)"
 git push --force origin "$BRANCH"

@@ -56,6 +56,8 @@ runs:
     - name: Check out the repo
       uses: actions/checkout@v4
       if: ${{ inputs.SKIP_CHECKOUT == 'false' }}
+      with:
+        path: "repo"
     - name: Cache ccache
       uses: actions/cache@v4
       with:
