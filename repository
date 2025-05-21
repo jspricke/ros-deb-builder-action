@@ -64,7 +64,7 @@ git init -b "$BRANCH"
 test -n "$GIT_LFS" && git lfs track "*.deb" "*.ddeb"
 
 git remote add origin "$(echo "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git" | sed "s#https://#https://x-access-token:${GITHUB_TOKEN}@#")"
-if [ -n "$SQUASH_HISTORY" ]; then
+if [ -z "$SQUASH_HISTORY" ]; then
   git fetch origin "$BRANCH" || true
   git reset --soft FETCH_HEAD || true
 fi
