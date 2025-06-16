@@ -41,9 +41,6 @@ cd apt_repo
 apt-ftparchive packages . > Packages
 apt-ftparchive release . > Release
 
-# Github size limit
-test -n "$GITHUB_TOKEN" && find . -type f -size +100M -delete
-
 REPOSITORY="$(printf "%s" "$GITHUB_REPOSITORY" | tr / _)"
 BRANCH="${PACKAGES_BRANCH:-$DEB_DISTRO-$ROS_DISTRO-$DEB_ARCH}"
 echo '```bash' > README.md
