@@ -50,6 +50,9 @@ inputs:
   GIT_LFS:
     description: If set to true, use Git Large File Storage for storing binaries (*.deb and *.ddeb)
     required: false
+  PRE_BUILD_HOOK:
+    description: If set, this script will be executed before running sbuild.
+    required: false
 runs:
   using: composite
   steps:
@@ -82,6 +85,7 @@ runs:
         COLCON_DEFAULTS_FILE: ${{ inputs.COLCON_DEFAULTS_FILE }}
         SKIP_ROS_REPOSITORY: ${{ inputs.SKIP_ROS_REPOSITORY }}
         SKIP_PACKAGES: ${{ inputs.SKIP_PACKAGES }}
+        PRE_BUILD_HOOK: ${{ inputs.PRE_BUILD_HOOK }}
     - name: Create apt repository and deploy it
       run: $GITHUB_ACTION_PATH/repository
       shell: sh
