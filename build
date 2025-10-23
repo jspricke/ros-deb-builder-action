@@ -87,7 +87,7 @@ done
 echo "yaml file://$APT_REPO/local.yaml $ROS_DISTRO" > "$APT_REPO/1-local.list"
 echo "$ROSDEP_SOURCE" > "$APT_REPO/2-remote.list"
 
-ROS_HOME="$APT_REPO/ros" ROSDEP_SOURCE_PATH="$APT_REPO:/etc/ros/rosdep/sources.list.d/" rosdep update
+ROS_HOME="$APT_REPO/ros" ROSDEP_SOURCE_PATH="$APT_REPO:/etc/ros/rosdep/sources.list.d/" rosdep update --include-eol-distros
 
 echo "Run sbuild"
 
