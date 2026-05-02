@@ -8,6 +8,10 @@ Convert ROS packages to Debian packages.
 
 **Required** The ROS distribution codename to compile for.
 
+## `ROS_TESTING`
+
+`true`: Use the [ros-testing repository](https://docs.ros.org/en/rolling/Installation/Testing.html) (default: `false`).
+
 ## `DEB_DISTRO`
 
 **Required** The Debian/Ubuntu distribution codename to compile for.
