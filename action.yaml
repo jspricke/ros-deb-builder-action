@@ -8,6 +8,10 @@ inputs:
   ROS_DISTRO:
     description: The ROS distribution codename to compile for.
     required: true
+  ROS_TESTING:
+    description: Use the ros-testing repository.
+    required: false
+    default: false
   DEB_DISTRO:
     description: The Debian/Ubuntu distribution codename to compile for.
     required: true
@@ -76,6 +80,7 @@ runs:
       shell: sh
       env:
         ROS_DISTRO: ${{ inputs.ROS_DISTRO }}
+        ROS_TESTING: ${{ inputs.ROS_TESTING }}
         DEB_DISTRO: ${{ inputs.DEB_DISTRO }}
         DEB_ARCH: ${{ inputs.DEB_ARCH }}
         ROSDEP_SOURCE: ${{ inputs.ROSDEP_SOURCE }}

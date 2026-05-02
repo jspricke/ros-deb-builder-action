@@ -71,8 +71,12 @@ case $ROS_DISTRO in
     BLOOM=ros
     ROS_DEB="$ROS_DISTRO-"
     if [ -z "$SKIP_ROS_REPOSITORY" ]; then
-      curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o "$APT_REPO/ros-archive-keyring.gpg"
-      set -- --extra-repository="deb http://packages.ros.org/ros2/ubuntu $DEB_DISTRO main" --extra-repository-key="$APT_REPO/ros-archive-keyring.gpg" "$@"
+      curl -sSL https://github.com/ros-infrastructure/ros-apt-source/raw/refs/heads/main/ros-apt-source/keys/ros2-archive-keyring.gpg -o "$APT_REPO/ros2-archive-keyring.gpg"
+      if [ "$ROS_TESTING" = "false" ]; then
+        set -- --extra-repository="deb http://packages.ros.org/ros2/ubuntu $DEB_DISTRO main" --extra-repository-key="$APT_REPO/ros2-archive-keyring.gpg" "$@"
+      elif [ "$ROS_TESTING" = "true" ]; then
+        set -- --extra-repository="deb http://packages.ros.org/ros2-testing/ubuntu $DEB_DISTRO main" --extra-repository-key="$APT_REPO/ros2-archive-keyring.gpg" "$@"
+      fi
     fi
     ;;
 esac
