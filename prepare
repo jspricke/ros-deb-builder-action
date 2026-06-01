@@ -34,6 +34,7 @@ set -ex
 
 test "$VERSION_CODENAME" = "jammy" && sudo cp "$(dirname "$0")/jammy-sbuild.sources" /etc/apt/sources.list.d/
 test "$VERSION_CODENAME" = "noble" && sudo cp "$(dirname "$0")/noble-ros.sources" /etc/apt/sources.list.d/
+test "$VERSION_CODENAME" = "resolute" && sudo cp "$(dirname "$0")/resolute-ros.sources" /etc/apt/sources.list.d/
 sudo apt update
 
 sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sbuild mmdebstrap distro-info debian-archive-keyring ccache uidmap curl git-lfs
@@ -42,14 +43,14 @@ if [ "$DEB_ARCH" != "$(dpkg --print-architecture)" ]; then
   # use qemu to translate architecture
   sudo apt install -y --no-install-recommends qemu-user-static arch-test
   if [ "$VERSION_CODENAME" = "jammy" ]; then
-    # manally enable binfmt_misc on Ubuntu 22.04 Docker images
+    # manually enable binfmt_misc on Ubuntu 22.04 Docker images
     sudo apt install -y --no-install-recommends binfmt-support
     arch-test "$DEB_ARCH" || sudo update-binfmts --enable
   fi
 fi
 
 # Try different package combinations:
-# first is for Debian bookworm and newer resp. Ubuntu noble with the PPA
+# first is for Debian bookworm and newer resp. Ubuntu with the PPA
 # second is for a clean Ubuntu jammy with the PPA
 # third is for OSRF package names
 # TODO: get OSRF to add proper package relations
