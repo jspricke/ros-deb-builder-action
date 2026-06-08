@@ -63,6 +63,9 @@ runs:
       with:
         path: "repo"
         fetch-tags: true
+        # https://github.com/actions/checkout/issues/1471#issuecomment-1755639487
+        fetch-depth: 0
+        filter: tree:0
     - name: Cache ccache
       uses: actions/cache@v5
       with:
