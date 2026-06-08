@@ -58,12 +58,13 @@ runs:
   using: composite
   steps:
     - name: Check out the repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       if: ${{ inputs.SKIP_CHECKOUT == 'false' }}
       with:
         path: "repo"
+        fetch-tags: true
     - name: Cache ccache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: /home/runner/.cache/ccache
         key: ccache-${{ inputs.DEB_DISTRO }}-${{ inputs.DEB_ARCH }}-${{ inputs.ROS_DISTRO }}
